@@ -132,7 +132,7 @@ namespace GDLibrary
         public static readonly string UnlitTexturedBillboardVertexDataID = "unlit tex billboard vertexdata";
         public static readonly string LitTexturedCubeVertexDataID = "lit tex cube vertexdata";
         public static readonly string LitTexturedDiamondVertexDataID = "DIAMOND";
-
+        public static readonly string LitCube = "Cube";
         #endregion
 
         #region Effect parameter ids used by the effect dictionary
@@ -162,6 +162,7 @@ namespace GDLibrary
         #region Mouse
         //defines how much the mouse has to move in pixels before a movement is registered - see MouseManager::HasMoved()
         public static readonly float MouseSensitivity = 1;
+
 
         #endregion
     }
