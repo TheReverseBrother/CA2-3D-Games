@@ -376,13 +376,13 @@ namespace GDApp
         {
             CollidablePrimitiveObject collidablePrimitiveObject = null;
             EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
-            effectParameters.Texture = this.textureDictionary["Blue"];
-            Transform3D transform = new Transform3D(new Vector3(10 + 10, 4 /*i.e. half the scale of 8*/, 40), new Vector3(6, 8, 6));
+            effectParameters.Texture = this.textureDictionary["LightBlue"];
+            Transform3D transform = new Transform3D(new Vector3(10, -3, 40), new Vector3(50, 8, 30));
             BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
 
             collidablePrimitiveObject = new CollidablePrimitiveObject("collidable lit cube ",
                     //this is important as it will determine how we filter collisions in our collidable player CDCR code
-                    ActorType.CollidableArchitecture,
+                    ActorType.CollidableGround,
                     transform,
                     effectParameters,
                     StatusType.Drawn | StatusType.Update,
@@ -1124,6 +1124,7 @@ namespace GDApp
             this.textureDictionary.Load("Assets/Textures/Colors/Blue");
             this.textureDictionary.Load("Assets/Textures/Colors/Purple");
             this.textureDictionary.Load("Assets/Textures/Colors/White");
+            this.textureDictionary.Load("Assets/Textures/Colors/LightBlue");
 
             #region billboards
             this.textureDictionary.Load("Assets/Textures/Billboards/billboardtexture");

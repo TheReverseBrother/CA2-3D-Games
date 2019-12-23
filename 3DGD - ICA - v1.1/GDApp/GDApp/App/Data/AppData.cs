@@ -52,7 +52,7 @@ namespace GDLibrary
 
         #region Car
         public static readonly float CarRotationSpeed = 0.1f;
-        public static readonly float CarMoveSpeed = 0.09f;
+        public static readonly float CarMoveSpeed = 0.005f;
         public static readonly float CarStrafeSpeed = 0.7f * CarMoveSpeed;
         #endregion
 
@@ -145,8 +145,8 @@ namespace GDLibrary
         #region Player
         public static readonly string PlayerOneID = "player1";
         public static readonly string PlayerTwoID = "player2";
-        public static readonly float PlayerMoveSpeed = 0.125f;
-        public static readonly float PlayerStrafeSpeed = 0.7f * PlayerMoveSpeed;
+        public static readonly float PlayerMoveSpeed = 0.08f;
+        public static readonly float PlayerStrafeSpeed = 0.1f * PlayerMoveSpeed;
         public static readonly float PlayerRotationSpeed = 0.08f;
         public static readonly float PlayerRadius = 1.5f;
         public static readonly float PlayerHeight = 4.5f;
