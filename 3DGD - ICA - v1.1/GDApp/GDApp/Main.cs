@@ -376,14 +376,14 @@ namespace GDApp
 
         private void InitializeLevelOnePath()
         {
-            CollidablePrimitiveObject collidablePrimitiveObject = null;
+            CollidablePrimitiveObject forwardFloorBlock = null,cloneItem = null;
             EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
             effectParameters.Texture = this.textureDictionary["LightBlue"];
-            Transform3D transform = new Transform3D(new Vector3(10, -3, 40), new Vector3(50, 8, 40));
+            Transform3D transform = new Transform3D(new Vector3(10, -3, 40), new Vector3(40, 8, 40));
             BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
 
             //Ground
-            collidablePrimitiveObject = new CollidablePrimitiveObject("collidable lit cube ",
+            forwardFloorBlock = new CollidablePrimitiveObject("collidable lit cube ",
                     //this is important as it will determine how we filter collisions in our collidable player CDCR code
                     ActorType.CollidableGround,
                     transform,
@@ -392,17 +392,30 @@ namespace GDApp
                     this.vertexDictionary[AppData.LitCube],
                     collisionPrimitive, this.object3DManager);
 
-            this.object3DManager.Add(collidablePrimitiveObject);
+            this.object3DManager.Add(forwardFloorBlock);
 
-           
+            for (int i = 1; i < 5; i++)
+            {
+                cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(40 * i, 0, 0);
 
+                this.object3DManager.Add(cloneItem);
+            }
+
+            for(int i = 1; i < 3; i++)
+            {
+                cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(40 * 4, 0, 40 * i);
+
+                this.object3DManager.Add(cloneItem);
+            }
 
         }
 
         private void InitializeLevelOneWalls()
         {
             #region Common Attributes
-            CollidablePrimitiveObject collidablePrimitiveObject = null,clonedItem = null;
+            CollidablePrimitiveObject collidablePrimitiveObject = null, leftWall = null, rightWall = null, cloneItem = null; ;
             EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
             effectParameters.Texture = this.textureDictionary["White"];
             BoxCollisionPrimitive collisionPrimitive = null;
@@ -410,8 +423,8 @@ namespace GDApp
             #endregion
             #region Back Wall
             collisionPrimitive = new BoxCollisionPrimitive();
-            transform = new Transform3D(new Vector3(-12.5f, 2, 40), new Vector3(5, 2, 30));
-            collidablePrimitiveObject = collidablePrimitiveObject = new CollidablePrimitiveObject("Wall-1 ",
+            transform = new Transform3D(new Vector3(-7.5f, 2, 40), new Vector3(5, 2, 30));
+            collidablePrimitiveObject = new CollidablePrimitiveObject("Wall-1 ",
             ActorType.CollidableWall,
             transform,
             effectParameters,
@@ -420,25 +433,58 @@ namespace GDApp
             collisionPrimitive, this.object3DManager);
 
             this.object3DManager.Add(collidablePrimitiveObject);
+
+            
+                cloneItem = collidablePrimitiveObject.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Scale = new Vector3(5, 2, 5);
+                cloneItem.Transform.Translation = new Vector3(152.5f, 2, 57.5f);
+
+                this.object3DManager.Add(cloneItem);
+            
+
+
+            cloneItem = collidablePrimitiveObject.Clone() as CollidablePrimitiveObject;
+            cloneItem.Transform.Translation += new Vector3(195, 0, 2.5f);
+            cloneItem.Transform.Scale = new Vector3(5, 2, 35);
+
+            this.object3DManager.Add(cloneItem);
+
             #endregion
 
             #region SideWalls
             collisionPrimitive = new BoxCollisionPrimitive();
-            transform = new Transform3D(new Vector3(10, 2, 22.5f), new Vector3(50, 2, 5));
+            transform = new Transform3D(new Vector3(10, 2, 22.5f), new Vector3(40, 2, 5));
 
-            collidablePrimitiveObject = collidablePrimitiveObject = new CollidablePrimitiveObject("Wall-2 ",
+            leftWall = new CollidablePrimitiveObject("Wall-2 ",
             ActorType.CollidableWall,
             transform,
             effectParameters,
             StatusType.Drawn | StatusType.Update,
             this.vertexDictionary[AppData.LitCube],
             collisionPrimitive, this.object3DManager);
-            this.object3DManager.Add(collidablePrimitiveObject);
+
+            this.object3DManager.Add(leftWall);
 
 
-            clonedItem = collidablePrimitiveObject.Clone() as CollidablePrimitiveObject;
-            clonedItem.Transform.Translation += new Vector3(0,0,35);
-            this.object3DManager.Add(clonedItem);
+            rightWall = leftWall.Clone() as CollidablePrimitiveObject;
+            rightWall.Transform.Translation += new Vector3(0,0,35);
+            this.object3DManager.Add(rightWall);
+
+            for(int i = 1; i < 4; i++)
+            {
+                cloneItem = rightWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(40 * i, 0, 0);
+
+                this.object3DManager.Add(cloneItem);
+            }
+
+            for (int i = 1; i < 5; i++)
+            {
+                cloneItem = leftWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(40 * i, 0, 0);
+
+                this.object3DManager.Add(cloneItem);
+            }
 
             #endregion
         }
@@ -601,7 +647,7 @@ namespace GDApp
         private void InitializeCollidablePlayer()
         {
             //set the position
-            Transform3D transform = new Transform3D(new Vector3(-5, 2.8f, 40), Vector3.Zero, new Vector3(3, 3, 3), Vector3.UnitX, Vector3.UnitY);
+            Transform3D transform = new Transform3D(new Vector3(0, 2.8f, 40), Vector3.Zero, new Vector3(3, 3, 3), Vector3.UnitX, Vector3.UnitY);
  
             //load up the particular texture, color, alpha for the player
             EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
@@ -1291,50 +1337,7 @@ namespace GDApp
 
             AddThirdPersonCamera(AppData.CameraIDThirdPerson, viewport, projectionParameters);
         }
-        private void AddCollidableFirstPersonCamera(string id, Viewport viewport, ProjectionParameters projectionParameters)
-        {
-    
-        }
-        private void AddMainAndPipCamera(Viewport viewport, ProjectionParameters projectionParameters)
-        {
-            Camera3D camera3D = null;
-            Transform3D transform = null;
-
-            //security camera
-            transform = new Transform3D(new Vector3(0, 40, 0),
-                Vector3.Zero, Vector3.One, -Vector3.UnitY, Vector3.UnitZ);
-
-            int width = 240;
-            int height = 180;
-            int xPos = this.resolution.X - width - 10;
-            Viewport pipViewport = new Viewport(xPos, 10, width, height);
-
-            camera3D = new Camera3D("sc1", ActorType.Camera, transform,
-                projectionParameters, pipViewport,
-                0f, StatusType.Update);
-
-
-            camera3D.AttachController(new SecurityCameraController("scc1", ControllerType.Security, 15, 2, Vector3.UnitX));
-
-            this.cameraManager.Add(camera3D);
-
-            //1st person
-            transform = new Transform3D(
-                 new Vector3(0, 10, 100), Vector3.Zero,
-                 Vector3.One, -Vector3.UnitZ, Vector3.UnitY);
-
-            camera3D = new Camera3D("fpc1", ActorType.Camera, transform,
-                projectionParameters, viewport,
-                1f, StatusType.Update);
-
-            camera3D.AttachController(new FirstPersonCameraController(
-              "fpcc1", ControllerType.FirstPerson,
-              AppData.CameraMoveKeys, AppData.CameraMoveSpeed,
-              AppData.CameraStrafeSpeed, AppData.CameraRotationSpeed, this.inputManagerParameters, this.screenCentre));
-
-            //put controller later!
-            this.cameraManager.Add(camera3D);
-        }
+ 
         private void AddTrack3DCamera(string id, Viewport viewport, ProjectionParameters projectionParameters)
         {
             //doesnt matter where the camera starts because we reset immediately inside the Transform3DCurveController
@@ -1385,52 +1388,8 @@ namespace GDApp
             this.cameraManager.Add(camera3D);
 
         }
-        private void AddSecurityCamera(string id, Viewport viewport, ProjectionParameters projectionParameters)
-        {
-            Transform3D transform = new Transform3D(new Vector3(50, 10, 10), Vector3.Zero, Vector3.Zero, -Vector3.UnitX, Vector3.UnitY);
+      
 
-            Camera3D camera3D = new Camera3D(id,
-                ActorType.Camera, transform,
-                projectionParameters, viewport,
-                0f, StatusType.Update);
-
-            camera3D.AttachController(new SecurityCameraController("scc1", ControllerType.Security, 15, 2, Vector3.UnitX));
-
-            this.cameraManager.Add(camera3D);
-
-        }
-        private void AddFlightCamera(string id, Viewport viewport, ProjectionParameters projectionParameters)
-        {
-            Transform3D transform = new Transform3D(new Vector3(0, 10, 30), Vector3.Zero, Vector3.Zero, -Vector3.UnitZ, Vector3.UnitY);
-
-            Camera3D camera3D = new Camera3D(id,
-                ActorType.Camera, transform,
-                projectionParameters, viewport,
-                0f, StatusType.Update);
-
-            camera3D.AttachController(new FlightCameraController("flight camera controller 1", 
-                ControllerType.Flight, AppData.CameraMoveKeys_Alt1, AppData.CameraMoveSpeed,
-                AppData.CameraStrafeSpeed, AppData.CameraRotationSpeed, this.inputManagerParameters, this.screenCentre));
-
-            this.cameraManager.Add(camera3D);
-        }
-        private void AddFirstPersonCamera(string id, Viewport viewport, ProjectionParameters projectionParameters)
-        {
-            Transform3D transform = new Transform3D(new Vector3(0, 10, 80), Vector3.Zero, Vector3.Zero, -Vector3.UnitZ, Vector3.UnitY);
-
-            Camera3D camera3D = new Camera3D(id,
-                ActorType.Camera, transform,
-                projectionParameters, viewport,
-                0f, StatusType.Update);
-
-            camera3D.AttachController(new FirstPersonCameraController(
-                "fpcc1", ControllerType.FirstPerson,
-                AppData.CameraMoveKeys, AppData.CameraMoveSpeed, 
-                AppData.CameraStrafeSpeed, AppData.CameraRotationSpeed, this.inputManagerParameters, this.screenCentre));
-
-            this.cameraManager.Add(camera3D);
-
-        }
         #endregion
 
         #region Load/Unload, Draw, Update
