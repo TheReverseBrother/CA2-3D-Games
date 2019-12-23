@@ -52,7 +52,7 @@ namespace GDApp
         protected override void Initialize()
         {
             //set the title
-            Window.Title = "3DGD - My Amazing Game 1.0";
+            Window.Title = "Tomas Game";
 
             //note - consider what settings CameraLayoutType.Single and ScreenLayoutType to > 1 means.
             //set camera layout - single or multi
@@ -283,18 +283,18 @@ namespace GDApp
             {
                 //non-collidable
                 InitializeSkyBox(worldScale);
-                InitializeNonCollidableGround(worldScale);
-                InitializeNonCollidableProps();
+                //InitializeNonCollidableGround(worldScale);
+                //InitializeNonCollidableProps();
 
                 //collidable
                 InitializeCollidableProps();
                 //collidable and drivable player
                 InitializeCollidablePlayer();
                 //demo of loading from a level image
-                LoadObjectsFromImageFile("level1", 2, 2, 2.5f, new Vector3(-100, 0, 0));
-
+                //LoadObjectsFromImageFile("level1", 2, 2, 2.5f, new Vector3(-100, 0, 0));
+                InitializeLevelOnePath();
                 //collidable zones
-                InitializeCollidableZones();
+                //InitializeCollidableZones();
 
             }
             else if (gameLevel == 2)
@@ -372,7 +372,25 @@ namespace GDApp
 
             this.object3DManager.Add(primitiveObject);
         }
+        private void InitializeLevelOnePath()
+        {
+            CollidablePrimitiveObject collidablePrimitiveObject = null;
+            EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["Blue"];
+            Transform3D transform = new Transform3D(new Vector3(10 + 10, 4 /*i.e. half the scale of 8*/, 40), new Vector3(6, 8, 6));
+            BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
 
+            collidablePrimitiveObject = new CollidablePrimitiveObject("collidable lit cube ",
+                    //this is important as it will determine how we filter collisions in our collidable player CDCR code
+                    ActorType.CollidableArchitecture,
+                    transform,
+                    effectParameters,
+                    StatusType.Drawn | StatusType.Update,
+                    this.vertexDictionary[AppData.LitCube],
+                    collisionPrimitive, this.object3DManager);
+
+            this.object3DManager.Add(collidablePrimitiveObject);
+        }
         private void InitializeNonCollidableProps()
         {
             PrimitiveObject primitiveObject = null;
@@ -838,6 +856,10 @@ namespace GDApp
             this.vertexDictionary.Add(AppData.LitTexturedCubeVertexDataID, 
                 new BufferedVertexData<VertexPositionNormalTexture>(graphics.GraphicsDevice, VertexFactory.GetVerticesPositionNormalTexturedCube(1, out primitiveType, out primitiveCount),
                primitiveType, primitiveCount));
+
+            this.vertexDictionary.Add(AppData.LitCube,
+                new BufferedVertexData<VertexPositionNormalTexture>(graphics.GraphicsDevice, VertexFactory.GetVerticesPositionNormalTexturedCube(1, out primitiveType, out primitiveCount),
+               primitiveType, primitiveCount));
             #endregion
             #endregion
 
@@ -1096,6 +1118,12 @@ namespace GDApp
             this.textureDictionary.Load("Assets/Debug/Textures/checkerboard");
             this.textureDictionary.Load("Assets/Debug/Textures/ml");
             this.textureDictionary.Load("Assets/Debug/Textures/checkerboard");
+
+
+            //Colors
+            this.textureDictionary.Load("Assets/Textures/Colors/Blue");
+            this.textureDictionary.Load("Assets/Textures/Colors/Purple");
+            this.textureDictionary.Load("Assets/Textures/Colors/White");
 
             #region billboards
             this.textureDictionary.Load("Assets/Textures/Billboards/billboardtexture");
