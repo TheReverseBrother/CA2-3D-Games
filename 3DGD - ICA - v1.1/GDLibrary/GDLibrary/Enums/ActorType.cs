@@ -22,6 +22,7 @@ namespace GDLibrary
         //collidable
         CollidableGround,
         CollidableWall,
+        CollidableLazer,
         CollidableProp,
         CollidablePickup,
         CollidableArchitecture,

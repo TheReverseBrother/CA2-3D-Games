@@ -76,7 +76,7 @@ namespace GDLibrary
         public static readonly float CameraThirdPersonScrollSpeedElevationMultiplier = 0.001f;
         public static readonly float CameraThirdPersonDistance = 90;
         public static readonly float CameraThirdPersonElevationAngleInDegrees = 20;
-        public static readonly float CameraThirdPersonAngleInDegrees = 0.5f;//45 degrees
+        public static readonly float CameraThirdPersonAngleInDegrees = 1;//45 degrees
 
         //security camera
         public static readonly Vector3 SecurityCameraRotationAxisYaw = Vector3.UnitX;

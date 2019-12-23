@@ -293,6 +293,7 @@ namespace GDApp
                 //demo of loading from a level image
                 //LoadObjectsFromImageFile("level1", 2, 2, 2.5f, new Vector3(-100, 0, 0));
                 InitializeLevelOnePath();
+                InitializeLevelOneWalls();
                 //collidable zones
                 //InitializeCollidableZones();
 
@@ -372,14 +373,16 @@ namespace GDApp
 
             this.object3DManager.Add(primitiveObject);
         }
+
         private void InitializeLevelOnePath()
         {
             CollidablePrimitiveObject collidablePrimitiveObject = null;
             EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
             effectParameters.Texture = this.textureDictionary["LightBlue"];
-            Transform3D transform = new Transform3D(new Vector3(10, -3, 40), new Vector3(50, 8, 30));
+            Transform3D transform = new Transform3D(new Vector3(10, -3, 40), new Vector3(50, 8, 40));
             BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
 
+            //Ground
             collidablePrimitiveObject = new CollidablePrimitiveObject("collidable lit cube ",
                     //this is important as it will determine how we filter collisions in our collidable player CDCR code
                     ActorType.CollidableGround,
@@ -390,6 +393,54 @@ namespace GDApp
                     collisionPrimitive, this.object3DManager);
 
             this.object3DManager.Add(collidablePrimitiveObject);
+
+           
+
+
+        }
+
+        private void InitializeLevelOneWalls()
+        {
+            #region Common Attributes
+            CollidablePrimitiveObject collidablePrimitiveObject = null,clonedItem = null;
+            EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["White"];
+            BoxCollisionPrimitive collisionPrimitive = null;
+            Transform3D transform = null;
+            #endregion
+            #region Back Wall
+            collisionPrimitive = new BoxCollisionPrimitive();
+            transform = new Transform3D(new Vector3(-12.5f, 2, 40), new Vector3(5, 2, 30));
+            collidablePrimitiveObject = collidablePrimitiveObject = new CollidablePrimitiveObject("Wall-1 ",
+            ActorType.CollidableWall,
+            transform,
+            effectParameters,
+            StatusType.Drawn | StatusType.Update,
+            this.vertexDictionary[AppData.LitCube],
+            collisionPrimitive, this.object3DManager);
+
+            this.object3DManager.Add(collidablePrimitiveObject);
+            #endregion
+
+            #region SideWalls
+            collisionPrimitive = new BoxCollisionPrimitive();
+            transform = new Transform3D(new Vector3(10, 2, 22.5f), new Vector3(50, 2, 5));
+
+            collidablePrimitiveObject = collidablePrimitiveObject = new CollidablePrimitiveObject("Wall-2 ",
+            ActorType.CollidableWall,
+            transform,
+            effectParameters,
+            StatusType.Drawn | StatusType.Update,
+            this.vertexDictionary[AppData.LitCube],
+            collisionPrimitive, this.object3DManager);
+            this.object3DManager.Add(collidablePrimitiveObject);
+
+
+            clonedItem = collidablePrimitiveObject.Clone() as CollidablePrimitiveObject;
+            clonedItem.Transform.Translation += new Vector3(0,0,35);
+            this.object3DManager.Add(clonedItem);
+
+            #endregion
         }
         private void InitializeNonCollidableProps()
         {
@@ -508,7 +559,7 @@ namespace GDApp
 
             for (int i = 1; i < 10; i++)
             {
-                transform = new Transform3D(new Vector3(i * 10 + 10, 4 /*i.e. half the scale of 8*/, 20), new Vector3(6, 8, 6));
+                transform = new Transform3D(new Vector3(i * 10 + 10, 4 /*i.e. half the scale of 8*/, 10), new Vector3(6, 8, 6));
 
                 //a unique copy of the effect for each box in case we want different color, texture, alpha
                 EffectParameters effectParameters = this.effectDictionary[AppData.UnlitWireframeEffectID].Clone() as EffectParameters;
@@ -550,15 +601,14 @@ namespace GDApp
         private void InitializeCollidablePlayer()
         {
             //set the position
-            Transform3D transform = new Transform3D(new Vector3(-5, 3, 40), Vector3.Zero, new Vector3(3, 3, 3), Vector3.UnitX, Vector3.UnitY);
+            Transform3D transform = new Transform3D(new Vector3(-5, 2.8f, 40), Vector3.Zero, new Vector3(3, 3, 3), Vector3.UnitX, Vector3.UnitY);
  
             //load up the particular texture, color, alpha for the player
             EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
-            effectParameters.Texture = this.textureDictionary["crate1"];
+            effectParameters.Texture = this.textureDictionary["Purple"];
 
             //make a CDCR surface - sphere or box, its up to you - you dont need to pass transform to either primitive anymore
             ICollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
-            //ICollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
 
             this.drivableModelObject
                 = new PlayerCollidablePrimitiveObject("PLAYER",
