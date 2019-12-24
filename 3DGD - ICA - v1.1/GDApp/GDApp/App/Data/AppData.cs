@@ -165,5 +165,15 @@ namespace GDLibrary
 
 
         #endregion
+
+
+        #region Level generation
+        public static readonly int pathOneLength = 4;
+        public static readonly int turnOneLength = 3;
+        public static readonly int pathTwoLength = 4;
+        public static readonly int turnTwoLength = 5;
+
+
+        #endregion
     }
 }
