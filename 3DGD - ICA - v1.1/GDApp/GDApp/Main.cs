@@ -379,10 +379,12 @@ namespace GDApp
             CollidablePrimitiveObject forwardFloorBlock = null,cloneItem = null;
             EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
             effectParameters.Texture = this.textureDictionary["LightBlue"];
+            Vector3 lastPosition = Vector3.Zero;
             Transform3D transform = new Transform3D(new Vector3(10, -3, 40), new Vector3(40, 8, 40));
             BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
 
             //Ground
+            //Template Block All Blocks Copy it
             forwardFloorBlock = new CollidablePrimitiveObject("collidable lit cube ",
                     //this is important as it will determine how we filter collisions in our collidable player CDCR code
                     ActorType.CollidableGround,
@@ -391,25 +393,45 @@ namespace GDApp
                     StatusType.Drawn | StatusType.Update,
                     this.vertexDictionary[AppData.LitCube],
                     collisionPrimitive, this.object3DManager);
-
-            this.object3DManager.Add(forwardFloorBlock);
-
-            for (int i = 1; i < 5; i++)
+            #region Generate Path
+            //Use For Loop to create the paths
+            for (int i = 0; i < 5; i++)
             {
                 cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
                 cloneItem.Transform.Translation += new Vector3(40 * i, 0, 0);
+                lastPosition = cloneItem.Transform.Translation;
 
                 this.object3DManager.Add(cloneItem);
             }
+            forwardFloorBlock.Transform.Translation = lastPosition;
 
             for(int i = 1; i < 3; i++)
             {
                 cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
-                cloneItem.Transform.Translation += new Vector3(40 * 4, 0, 40 * i);
+                cloneItem.Transform.Translation += new Vector3(0, 0, 40 * i);
+                lastPosition = cloneItem.Transform.Translation;
 
                 this.object3DManager.Add(cloneItem);
             }
+            forwardFloorBlock.Transform.Translation = lastPosition;
+            for (int i = 1; i < 4; i++)
+            {
+                cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(40 *i, 0, 0);
+                lastPosition = cloneItem.Transform.Translation;
 
+                this.object3DManager.Add(cloneItem);
+            }
+            forwardFloorBlock.Transform.Translation = lastPosition;
+
+            for (int i = 1; i < 3; i++)
+            {
+                cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(0, 0, -(40*i));
+                lastPosition = cloneItem.Transform.Translation;
+                this.object3DManager.Add(cloneItem);
+            }
+            #endregion
         }
 
         private void InitializeLevelOneWalls()
@@ -421,9 +443,9 @@ namespace GDApp
             BoxCollisionPrimitive collisionPrimitive = null;
             Transform3D transform = null;
             #endregion
-            #region Back Wall
+            #region SideWalls Z Axis
             collisionPrimitive = new BoxCollisionPrimitive();
-            transform = new Transform3D(new Vector3(-7.5f, 2, 40), new Vector3(5, 2, 30));
+            transform = new Transform3D(new Vector3(-7.5f, 2, 40), new Vector3(5, 2, 40));
             collidablePrimitiveObject = new CollidablePrimitiveObject("Wall-1 ",
             ActorType.CollidableWall,
             transform,
@@ -434,24 +456,30 @@ namespace GDApp
 
             this.object3DManager.Add(collidablePrimitiveObject);
 
-            
+            for (int i = 0; i < 2; i++)
+            {
                 cloneItem = collidablePrimitiveObject.Clone() as CollidablePrimitiveObject;
-                cloneItem.Transform.Scale = new Vector3(5, 2, 5);
-                cloneItem.Transform.Translation = new Vector3(152.5f, 2, 57.5f);
-
+                cloneItem.Transform.Translation += new Vector3(195, 0, 40 * i);
                 this.object3DManager.Add(cloneItem);
-            
+            }
 
+            for(int i = 1; i < 3;i++)
+            {
+                cloneItem = collidablePrimitiveObject.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(160, 0, 40 * i);
+                this.object3DManager.Add(cloneItem);
 
-            cloneItem = collidablePrimitiveObject.Clone() as CollidablePrimitiveObject;
-            cloneItem.Transform.Translation += new Vector3(195, 0, 2.5f);
-            cloneItem.Transform.Scale = new Vector3(5, 2, 35);
-
-            this.object3DManager.Add(cloneItem);
+            }
 
             #endregion
 
-            #region SideWalls
+
+
+
+
+
+
+            #region SideWalls X Axis
             collisionPrimitive = new BoxCollisionPrimitive();
             transform = new Transform3D(new Vector3(10, 2, 22.5f), new Vector3(40, 2, 5));
 
