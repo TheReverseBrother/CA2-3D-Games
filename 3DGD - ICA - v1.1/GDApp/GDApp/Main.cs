@@ -281,90 +281,18 @@ namespace GDApp
       
             if (gameLevel == 1)
             {
-                //InitializeCollidableProps();
-
                 InitializeCollidablePlayer();
                 InitializeLevelOneSineTrackLaser();
                 InitializeLevelOnePath();
                 InitializeLevelOneWalls();
                 InitialiseLevelOneSineLazer();
                 InitialiseLevelOneMoveableWalls();
-
+                InitialiseTrackLazer();
             }
             else if (gameLevel == 2)
             {
                 //add different things for your next level
             }
-        }
-
-        #region Non-Collidable Primitive Objects
-        private void InitializeSkyBox(int worldScale)
-        {
-            PrimitiveObject archTexturedPrimitiveObject = null, cloneTexturedPrimitiveObject = null;
-
-            #region Archetype
-            //we need to do an "as" typecast since the dictionary holds DrawnActor3D types
-            archTexturedPrimitiveObject = this.objectArchetypeDictionary[AppData.UnlitTexturedQuadArchetypeID] as PrimitiveObject;
-            archTexturedPrimitiveObject.Transform.Scale *= worldScale;
-            #endregion
-            //demonstrates how we can simply clone an archetypal primitive object and re-use by re-cloning
-            #region Skybox
-            //back
-            cloneTexturedPrimitiveObject = archTexturedPrimitiveObject.Clone() as PrimitiveObject;
-            cloneTexturedPrimitiveObject.ID = "skybox_back";
-            cloneTexturedPrimitiveObject.Transform.Translation = new Vector3(0, 0, -worldScale / 2.0f);
-            cloneTexturedPrimitiveObject.EffectParameters.Texture = this.textureDictionary["skybox_back"];
-            this.object3DManager.Add(cloneTexturedPrimitiveObject);
-
-            //left
-            cloneTexturedPrimitiveObject = archTexturedPrimitiveObject.Clone() as PrimitiveObject;
-            cloneTexturedPrimitiveObject.ID = "skybox_left";
-            cloneTexturedPrimitiveObject.Transform.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
-            cloneTexturedPrimitiveObject.Transform.Rotation = new Vector3(0, 90, 0);
-            cloneTexturedPrimitiveObject.EffectParameters.Texture = this.textureDictionary["skybox_left"];
-            this.object3DManager.Add(cloneTexturedPrimitiveObject);
-
-            //right
-            cloneTexturedPrimitiveObject = archTexturedPrimitiveObject.Clone() as PrimitiveObject;
-            cloneTexturedPrimitiveObject.ID = "skybox_right";
-            cloneTexturedPrimitiveObject.Transform.Translation = new Vector3(worldScale / 2.0f, 0, 0);
-            cloneTexturedPrimitiveObject.Transform.Rotation = new Vector3(0, -90, 0);
-            cloneTexturedPrimitiveObject.EffectParameters.Texture = this.textureDictionary["skybox_right"];
-            this.object3DManager.Add(cloneTexturedPrimitiveObject);
-
-            //front
-            cloneTexturedPrimitiveObject = archTexturedPrimitiveObject.Clone() as PrimitiveObject;
-            cloneTexturedPrimitiveObject.ID = "skybox_front";
-            cloneTexturedPrimitiveObject.Transform.Translation = new Vector3(0, 0, worldScale / 2.0f);
-            cloneTexturedPrimitiveObject.Transform.Rotation = new Vector3(0, 180, 0);
-            cloneTexturedPrimitiveObject.EffectParameters.Texture = this.textureDictionary["skybox_front"];
-            this.object3DManager.Add(cloneTexturedPrimitiveObject);
-
-            //top
-            cloneTexturedPrimitiveObject = archTexturedPrimitiveObject.Clone() as PrimitiveObject;
-            cloneTexturedPrimitiveObject.ID = "skybox_sky";
-            cloneTexturedPrimitiveObject.Transform.Translation = new Vector3(0, worldScale / 2.0f, 0);
-            cloneTexturedPrimitiveObject.Transform.Rotation = new Vector3(90, -90, 0);
-            cloneTexturedPrimitiveObject.EffectParameters.Texture = this.textureDictionary["skybox_sky"];
-            this.object3DManager.Add(cloneTexturedPrimitiveObject);
-            #endregion
-        }
-
-        private void InitializeNonCollidableGround(int worldScale)
-        {
-            Transform3D transform = new Transform3D(new Vector3(0, 0, 0), new Vector3(-90, 0, 0), worldScale * Vector3.One,
-              Vector3.UnitZ, Vector3.UnitY);
-
-            EffectParameters effectParameters = this.effectDictionary[AppData.UnlitTexturedEffectID].Clone() as EffectParameters;
-            effectParameters.Texture = this.textureDictionary["grass1"];
-
-            PrimitiveObject primitiveObject = new PrimitiveObject("ground", ActorType.Helper,
-                    transform,
-                    effectParameters,
-                    StatusType.Drawn | StatusType.Update,
-                    this.vertexDictionary[AppData.UnlitTexturedQuadVertexDataID]);
-
-            this.object3DManager.Add(primitiveObject);
         }
 
         #region Level One
@@ -617,17 +545,17 @@ namespace GDApp
 
             track3D.Add(startPosition, -Vector3.UnitZ, Vector3.UnitY, 0);
 
-            track3D.Add(firstCurve, -Vector3.UnitZ, Vector3.UnitY, 2);
+            track3D.Add(firstCurve, -Vector3.UnitZ, Vector3.UnitY, 1);
+
+            track3D.Add(secondCurve, -Vector3.UnitZ, Vector3.UnitY, 2);
+
+            track3D.Add(endPosition, -Vector3.UnitZ, Vector3.UnitY, 3);
 
             track3D.Add(secondCurve, -Vector3.UnitZ, Vector3.UnitY, 4);
 
-            track3D.Add(endPosition, -Vector3.UnitZ, Vector3.UnitY, 6);
+            track3D.Add(firstCurve, -Vector3.UnitZ, Vector3.UnitY, 5);
 
-            track3D.Add(secondCurve, -Vector3.UnitZ, Vector3.UnitY, 8);
-
-            track3D.Add(firstCurve, -Vector3.UnitZ, Vector3.UnitY, 10);
-
-            track3D.Add(startPosition, -Vector3.UnitZ, Vector3.UnitY, 12);
+            track3D.Add(startPosition, -Vector3.UnitZ, Vector3.UnitY, 6);
 
 
             Track3DController track = new Track3DController("Vertical Laser",ControllerType.Track, track3D, PlayStatusType.Play);
@@ -651,22 +579,24 @@ namespace GDApp
             Vector3 hiltCurveOne = firstCurve + adjustment;
             Vector3 hiltCurveTwo = secondCurve + adjustment;
 
+          
             Track3D trackPositions = new Track3D(CurveLoopType.Cycle);
 
 
             trackPositions.Add(hiltStart, -Vector3.UnitZ, Vector3.UnitY, 0);
 
-            trackPositions.Add(hiltCurveOne, -Vector3.UnitZ, Vector3.UnitY, 2);
+            trackPositions.Add(hiltCurveOne, -Vector3.UnitZ, Vector3.UnitY, 1);
+
+            trackPositions.Add(hiltCurveTwo, -Vector3.UnitZ, Vector3.UnitY, 2);
+
+            trackPositions.Add(hiltEnd, -Vector3.UnitZ, Vector3.UnitY, 3);
 
             trackPositions.Add(hiltCurveTwo, -Vector3.UnitZ, Vector3.UnitY, 4);
 
-            trackPositions.Add(hiltEnd, -Vector3.UnitZ, Vector3.UnitY, 6);
+            trackPositions.Add(hiltCurveOne, -Vector3.UnitZ, Vector3.UnitY, 5);
 
-            trackPositions.Add(hiltCurveTwo, -Vector3.UnitZ, Vector3.UnitY, 8);
-
-            trackPositions.Add(hiltCurveOne, -Vector3.UnitZ, Vector3.UnitY, 10);
-
-            trackPositions.Add(hiltStart, -Vector3.UnitZ, Vector3.UnitY, 12);
+            trackPositions.Add(hiltStart, -Vector3.UnitZ, Vector3.UnitY, 6);
+   
 
 
             Track3DController trackController = new Track3DController("Vertical Laser", ControllerType.Track, trackPositions, PlayStatusType.Play);
@@ -767,7 +697,47 @@ namespace GDApp
                 this.object3DManager.Add(wall);
             }
         }
+
+        private void InitialiseTrackLazer()
+        {
+            CollidablePrimitiveObject collidablePrimitiveObject1 = null, collidablePrimitiveObject2 = null;
+            float xPos = ((AppData.pathOneLength + AppData.pathTwoLength)-2) * 40;
+            float zPos = ((AppData.turnOneLength - AppData.turnTwoLength) +1) * 40;
+            Transform3D transform = null;
+            Vector3 start = new Vector3(xPos,10,zPos -5);
+            Vector3 end = new Vector3(xPos + ((AppData.pathThreeLength-1) * 40), 10 ,zPos);
+
+            transform = new Transform3D(new Vector3(xPos, 10,zPos -5), new Vector3(2, 30, 2));
+            BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+            EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["RED"];
+            collidablePrimitiveObject1 = new CollidablePrimitiveObject("TrackLazerOne", ActorType.CollidableLazer, transform,
+            effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+
+            #region Track
+            Track3D track3D = new Track3D(CurveLoopType.Cycle);
+
+            track3D.Add(start, -Vector3.UnitZ, Vector3.UnitY, 0);
+
+
+            track3D.Add(end, -Vector3.UnitZ, Vector3.UnitY, 3);
+
+
+            track3D.Add(start, -Vector3.UnitZ, Vector3.UnitY, 6);
+
+
+            Track3DController track = new Track3DController("Vertical Laser 2", ControllerType.Track, track3D, PlayStatusType.Play);
+
+            collidablePrimitiveObject1.AttachController(track);
+
+            #endregion
+
+
+            this.object3DManager.Add(collidablePrimitiveObject1);
+        }
         #endregion
+
+        #region Non-Collidable Primitive Objects
         private void InitializeNonCollidableProps()
         {
             PrimitiveObject primitiveObject = null;
@@ -862,6 +832,75 @@ namespace GDApp
 
             this.object3DManager.Add(primitiveObject);
             #endregion
+        }
+
+        private void InitializeSkyBox(int worldScale)
+        {
+            PrimitiveObject archTexturedPrimitiveObject = null, cloneTexturedPrimitiveObject = null;
+
+            #region Archetype
+            //we need to do an "as" typecast since the dictionary holds DrawnActor3D types
+            archTexturedPrimitiveObject = this.objectArchetypeDictionary[AppData.UnlitTexturedQuadArchetypeID] as PrimitiveObject;
+            archTexturedPrimitiveObject.Transform.Scale *= worldScale;
+            #endregion
+            //demonstrates how we can simply clone an archetypal primitive object and re-use by re-cloning
+            #region Skybox
+            //back
+            cloneTexturedPrimitiveObject = archTexturedPrimitiveObject.Clone() as PrimitiveObject;
+            cloneTexturedPrimitiveObject.ID = "skybox_back";
+            cloneTexturedPrimitiveObject.Transform.Translation = new Vector3(0, 0, -worldScale / 2.0f);
+            cloneTexturedPrimitiveObject.EffectParameters.Texture = this.textureDictionary["skybox_back"];
+            this.object3DManager.Add(cloneTexturedPrimitiveObject);
+
+            //left
+            cloneTexturedPrimitiveObject = archTexturedPrimitiveObject.Clone() as PrimitiveObject;
+            cloneTexturedPrimitiveObject.ID = "skybox_left";
+            cloneTexturedPrimitiveObject.Transform.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
+            cloneTexturedPrimitiveObject.Transform.Rotation = new Vector3(0, 90, 0);
+            cloneTexturedPrimitiveObject.EffectParameters.Texture = this.textureDictionary["skybox_left"];
+            this.object3DManager.Add(cloneTexturedPrimitiveObject);
+
+            //right
+            cloneTexturedPrimitiveObject = archTexturedPrimitiveObject.Clone() as PrimitiveObject;
+            cloneTexturedPrimitiveObject.ID = "skybox_right";
+            cloneTexturedPrimitiveObject.Transform.Translation = new Vector3(worldScale / 2.0f, 0, 0);
+            cloneTexturedPrimitiveObject.Transform.Rotation = new Vector3(0, -90, 0);
+            cloneTexturedPrimitiveObject.EffectParameters.Texture = this.textureDictionary["skybox_right"];
+            this.object3DManager.Add(cloneTexturedPrimitiveObject);
+
+            //front
+            cloneTexturedPrimitiveObject = archTexturedPrimitiveObject.Clone() as PrimitiveObject;
+            cloneTexturedPrimitiveObject.ID = "skybox_front";
+            cloneTexturedPrimitiveObject.Transform.Translation = new Vector3(0, 0, worldScale / 2.0f);
+            cloneTexturedPrimitiveObject.Transform.Rotation = new Vector3(0, 180, 0);
+            cloneTexturedPrimitiveObject.EffectParameters.Texture = this.textureDictionary["skybox_front"];
+            this.object3DManager.Add(cloneTexturedPrimitiveObject);
+
+            //top
+            cloneTexturedPrimitiveObject = archTexturedPrimitiveObject.Clone() as PrimitiveObject;
+            cloneTexturedPrimitiveObject.ID = "skybox_sky";
+            cloneTexturedPrimitiveObject.Transform.Translation = new Vector3(0, worldScale / 2.0f, 0);
+            cloneTexturedPrimitiveObject.Transform.Rotation = new Vector3(90, -90, 0);
+            cloneTexturedPrimitiveObject.EffectParameters.Texture = this.textureDictionary["skybox_sky"];
+            this.object3DManager.Add(cloneTexturedPrimitiveObject);
+            #endregion
+        }
+
+        private void InitializeNonCollidableGround(int worldScale)
+        {
+            Transform3D transform = new Transform3D(new Vector3(0, 0, 0), new Vector3(-90, 0, 0), worldScale * Vector3.One,
+              Vector3.UnitZ, Vector3.UnitY);
+
+            EffectParameters effectParameters = this.effectDictionary[AppData.UnlitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["grass1"];
+
+            PrimitiveObject primitiveObject = new PrimitiveObject("ground", ActorType.Helper,
+                    transform,
+                    effectParameters,
+                    StatusType.Drawn | StatusType.Update,
+                    this.vertexDictionary[AppData.UnlitTexturedQuadVertexDataID]);
+
+            this.object3DManager.Add(primitiveObject);
         }
 
         private void LoadObjectsFromImageFile(string fileName, float scaleX, float scaleZ, float height, Vector3 offset)
