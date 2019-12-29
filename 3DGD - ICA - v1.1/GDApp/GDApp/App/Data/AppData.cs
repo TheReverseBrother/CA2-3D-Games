@@ -172,7 +172,8 @@ namespace GDLibrary
         public static readonly int turnOneLength = 3;
         public static readonly int pathTwoLength = 4;
         public static readonly int turnTwoLength = 5;
-
+        public static readonly int pathThreeLength = 5;
+        public static int direction = 1; //Changes Direction of path generation
 
         #endregion
     }

@@ -294,6 +294,7 @@ namespace GDApp
                 //LoadObjectsFromImageFile("level1", 2, 2, 2.5f, new Vector3(-100, 0, 0));
                 InitializeLevelOnePath();
                 InitializeLevelOneWalls();
+                InitialiseLevelOneSineLazer();
                 //collidable zones
                 //InitializeCollidableZones();
 
@@ -434,6 +435,24 @@ namespace GDApp
 
                 this.object3DManager.Add(cloneItem);
             }
+            forwardFloorBlock.Transform.Translation = lastPosition;
+
+            for (int i = 1; i < AppData.pathThreeLength; i++)
+            {
+                cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(40 * i, 0,0);
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+            forwardFloorBlock.Transform.Translation = lastPosition;
+            #endregion
+
+
+            #region Add End Block
+            forwardFloorBlock.Transform.Translation += new Vector3(40, 0, 0);
+
+            this.object3DManager.Add(forwardFloorBlock);
             #endregion
         }
 
@@ -491,7 +510,7 @@ namespace GDApp
             nearWall.Transform.Translation = lastPosition;
 
             farWall.Transform.Translation += new Vector3(0, 0, 40);
-            for (int i = 0; i < AppData.turnTwoLength; i++)
+            for (int i = 0; i < AppData.turnTwoLength-1; i++)
             {
                 cloneItem = farWall.Clone() as CollidablePrimitiveObject;
                 cloneItem.Transform.Translation += new Vector3(((AppData.pathTwoLength-1) * 40), 0, 40 * -i);
@@ -500,12 +519,6 @@ namespace GDApp
             }
             farWall.Transform.Translation = lastPosition;
             #endregion
-
-
-
-
-
-
 
             #region SideWalls X Axis
             collisionPrimitive = new BoxCollisionPrimitive();
@@ -551,6 +564,7 @@ namespace GDApp
                 this.object3DManager.Add(cloneItem);
             }
             leftWall.Transform.Translation = lastPosition;
+
             for (int i = 1; i < AppData.pathTwoLength+1; i++)
             {
                 cloneItem = rightWall.Clone() as CollidablePrimitiveObject;
@@ -561,7 +575,75 @@ namespace GDApp
             }
             rightWall.Transform.Translation = lastPosition;
 
+            for (int i = 1; i < AppData.pathThreeLength+1; i++)
+            {
+                cloneItem = leftWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(40 * i, 0, -(40 * (AppData.turnTwoLength - 1)));
+                lastPosition = cloneItem.Transform.Translation;
 
+                this.object3DManager.Add(cloneItem);
+            }
+            leftWall.Transform.Translation = lastPosition;
+
+            for (int i = 1; i < AppData.pathThreeLength; i++)
+            {
+                cloneItem = rightWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(40 * i, 0, -(40 * (AppData.turnTwoLength - 1)));
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+            rightWall.Transform.Translation = lastPosition;
+
+            #endregion
+        }
+
+
+        private void InitialiseLevelOneSineLazer()
+        {
+            #region Common Fields
+            CollidablePrimitiveObject laserTemplate = null, cloneItem = null;
+            EffectParameters effectParameters = null;
+
+            Vector3 lastPosition = Vector3.Zero;
+            Transform3D transform = null;
+            BoxCollisionPrimitive collisionPrimitive = null;
+            #endregion
+
+            #region Lasers Path One
+            if(AppData.pathOneLength >=3)
+            {
+                for (int i = 1; i < 5; i++)
+                {
+                    collisionPrimitive = new BoxCollisionPrimitive();
+
+                    effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+                    effectParameters.Texture = this.textureDictionary["RED"];
+
+                    cloneItem = new CollidablePrimitiveObject("laser", ActorType.CollidableLazer, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+                    cloneItem.Transform = new Transform3D(new Vector3(20 * i, 2, 40), new Vector3(1, 1, 30));
+
+                    cloneItem.AttachController(new TranslationSineLerpController("laser-" + i, ControllerType.SineTranslation,
+                            Vector3.UnitY, new TrigonometricParameters(20, 0.1f, 90 * i)));
+
+                    this.object3DManager.Add(cloneItem);
+                }
+
+                for (int i = 1; i < 5; i++)
+                {
+                    collisionPrimitive = new BoxCollisionPrimitive();
+                    effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+                    effectParameters.Texture = this.textureDictionary["Black"];
+
+                    laserTemplate = new CollidablePrimitiveObject("laser", ActorType.CollidableLazer, transform,
+                        effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+                    laserTemplate.Transform = new Transform3D(new Vector3(20 * i, 2.2f, 25), new Vector3(2, 2, 5));
+                    laserTemplate.AttachController(new TranslationSineLerpController("laser-", ControllerType.SineTranslation,
+                                Vector3.UnitY, new TrigonometricParameters(20, 0.1f, 90 * i)));
+                    this.object3DManager.Add(laserTemplate);
+                }
+            }
             #endregion
         }
 
@@ -1298,6 +1380,9 @@ namespace GDApp
             this.textureDictionary.Load("Assets/Textures/Colors/Purple");
             this.textureDictionary.Load("Assets/Textures/Colors/White");
             this.textureDictionary.Load("Assets/Textures/Colors/LightBlue");
+            this.textureDictionary.Load("Assets/Textures/Colors/RED");
+            this.textureDictionary.Load("Assets/Textures/Colors/Black");
+
 
             #region billboards
             this.textureDictionary.Load("Assets/Textures/Billboards/billboardtexture");
