@@ -281,22 +281,14 @@ namespace GDApp
       
             if (gameLevel == 1)
             {
-                //non-collidable
-                InitializeSkyBox(worldScale);
-                //InitializeNonCollidableGround(worldScale);
-                //InitializeNonCollidableProps();
+                //InitializeCollidableProps();
 
-                //collidable
-                InitializeCollidableProps();
-                //collidable and drivable player
                 InitializeCollidablePlayer();
-                //demo of loading from a level image
-                //LoadObjectsFromImageFile("level1", 2, 2, 2.5f, new Vector3(-100, 0, 0));
+                InitializeLevelOneTrackLasers();
                 InitializeLevelOnePath();
                 InitializeLevelOneWalls();
                 InitialiseLevelOneSineLazer();
-                //collidable zones
-                //InitializeCollidableZones();
+
 
             }
             else if (gameLevel == 2)
@@ -598,6 +590,52 @@ namespace GDApp
             #endregion
         }
 
+        private void InitializeLevelOneTrackLasers()
+        {
+            #region Common Attributes
+            Transform3D transform = new Transform3D(new Vector3((40*AppData.pathOneLength-1)-10,10,40*AppData.turnOneLength),new Vector3(1,30,1));
+            BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+            EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["RED"];
+            Vector3 startPosition = new Vector3((40 * AppData.pathOneLength - 1), 10, (40 * AppData.turnOneLength) - 10);
+            Vector3 endPosition = new Vector3(40 * (AppData.pathOneLength + AppData.pathTwoLength - 2), 10, 40 * AppData.turnOneLength + 10);
+
+            float distance = Vector3.Distance(startPosition, endPosition);
+            float thirdOfDistance = distance / 3;
+            Vector3 firstCurve = startPosition + new Vector3(thirdOfDistance, 0, 20);
+            Vector3 secondCurve = endPosition - new Vector3(thirdOfDistance, 0, 20);
+            #endregion
+
+            CollidablePrimitiveObject collidablePrimitiveObject = new CollidablePrimitiveObject("TrackLazerOne",ActorType.CollidableLazer, transform, 
+                effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+
+            #region Track
+            Track3D track3D = new Track3D(CurveLoopType.Cycle);
+
+
+            track3D.Add(startPosition, -Vector3.UnitZ, Vector3.UnitY, 0);
+
+            track3D.Add(firstCurve, -Vector3.UnitZ, Vector3.UnitY, 2);
+
+            track3D.Add(secondCurve, -Vector3.UnitZ, Vector3.UnitY, 4);
+
+            track3D.Add(endPosition, -Vector3.UnitZ, Vector3.UnitY, 6);
+
+            track3D.Add(secondCurve, -Vector3.UnitZ, Vector3.UnitY, 8);
+
+            track3D.Add(firstCurve, -Vector3.UnitZ, Vector3.UnitY, 10);
+
+            track3D.Add(startPosition, -Vector3.UnitZ, Vector3.UnitY, 12);
+
+
+            Track3DController track = new Track3DController("Vertical Laser",ControllerType.Track, track3D, PlayStatusType.Play);
+
+            collidablePrimitiveObject.AttachController(track);
+            #endregion
+
+            this.object3DManager.Add(collidablePrimitiveObject);
+
+        }
 
         private void InitialiseLevelOneSineLazer()
         {
@@ -1751,7 +1789,7 @@ namespace GDApp
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Purple);
             base.Draw(gameTime);
         }
         #endregion
