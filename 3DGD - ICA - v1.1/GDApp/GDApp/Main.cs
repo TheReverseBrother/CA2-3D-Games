@@ -288,7 +288,7 @@ namespace GDApp
                 InitializeLevelOnePath();
                 InitializeLevelOneWalls();
                 InitialiseLevelOneSineLazer();
-
+                InitialiseLevelOneMoveableWalls();
 
             }
             else if (gameLevel == 2)
@@ -367,6 +367,7 @@ namespace GDApp
             this.object3DManager.Add(primitiveObject);
         }
 
+        #region Level One
         private void InitializeLevelOnePath()
         {
             CollidablePrimitiveObject forwardFloorBlock = null,cloneItem = null;
@@ -671,8 +672,8 @@ namespace GDApp
             Track3DController trackController = new Track3DController("Vertical Laser", ControllerType.Track, trackPositions, PlayStatusType.Play);
 
             hilt.AttachController(trackController);
-            #endregion
             this.object3DManager.Add(hilt);
+            #endregion
 
             #endregion
         }
@@ -725,6 +726,48 @@ namespace GDApp
             #endregion
         }
 
+        private void InitialiseLevelOneMoveableWalls()
+        {
+            int amount = (AppData.turnTwoLength - 1) * 2;
+            Transform3D transform = null;
+            EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["ice"];
+            CollidablePrimitiveObject wall = null;
+            float xPos =( AppData.pathOneLength + AppData.pathTwoLength-2) * 40;
+            float zPos = AppData.turnOneLength * 40;
+
+
+            float frequency = 0.1f;
+            for(int i = 1;i < amount; i++)
+            {
+                BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+                transform = new Transform3D(new Vector3(xPos,2, zPos - (20 * i)),new Vector3(10,10,2));
+                wall = new CollidablePrimitiveObject("moveableWall-"+i,ActorType.CollidableWall, transform, effectParameters, 
+                    StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+                
+                #region Frequency Changer
+                if(amount % 4 == 0)
+                {
+                    if (i >= (amount - (amount / 4)))
+                    {
+                        frequency = 0.3f;
+                    }
+                    if(i >= amount/2 && i< amount - (amount / 4))
+                    {
+                        frequency = 0.2f;
+                    }             
+                }
+                #endregion
+
+                wall.AttachController(new TranslationSineLerpController("transControl1", ControllerType.SineTranslation,
+                    Vector3.UnitX, 
+                    new TrigonometricParameters(20,frequency,90 * i)));
+
+
+                this.object3DManager.Add(wall);
+            }
+        }
+        #endregion
         private void InitializeNonCollidableProps()
         {
             PrimitiveObject primitiveObject = null;
@@ -836,9 +879,6 @@ namespace GDApp
         {
             CollidablePrimitiveObject texturedPrimitiveObject = null;
             Transform3D transform = null;
-
-           
-
 
             for (int i = 1; i < 10; i++)
             {
@@ -1460,6 +1500,7 @@ namespace GDApp
             this.textureDictionary.Load("Assets/Textures/Colors/LightBlue");
             this.textureDictionary.Load("Assets/Textures/Colors/RED");
             this.textureDictionary.Load("Assets/Textures/Colors/Black");
+            this.textureDictionary.Load("Assets/Textures/Colors/ice");
 
 
             #region billboards
