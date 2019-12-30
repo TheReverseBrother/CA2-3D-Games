@@ -2,6 +2,7 @@ using GDLibrary;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace GDApp
@@ -287,7 +288,8 @@ namespace GDApp
                 InitializeLevelOneWalls();
                 InitialiseLevelOneSineLazer();
                 InitialiseLevelOneMoveableWalls();
-                InitialiseTrackLazer();
+                InitialiseLevelOneTrackLazer();
+                InitialiseLevelOnePickUps();
             }
             else if (gameLevel == 2)
             {
@@ -698,7 +700,7 @@ namespace GDApp
             }
         }
 
-        private void InitialiseTrackLazer()
+        private void InitialiseLevelOneTrackLazer()
         {
             CollidablePrimitiveObject collidablePrimitiveObject1 = null;
             float xPos = ((AppData.pathOneLength + AppData.pathTwoLength)-2) * 40;
@@ -783,6 +785,109 @@ namespace GDApp
                 this.object3DManager.Add(collidablePrimitiveObject1);
             }
             #endregion
+        }
+        
+        private void InitialiseLevelOnePickUps()
+        {
+            CollidablePrimitiveObject pickUpObject = null;
+            Transform3D transform = null;
+            Vector3 lastPosition = Vector3.Zero;
+            //Decide how much to implement
+            double a = AppData.pathOneLength / 2;
+            int amount = (int)Math.Round(a);
+
+            //Path One
+            for (int i = 1; i <= amount+1; i++)
+            {
+                //Changes position of the Items to not be in straight line
+                float position = 40 + 10 * (float)Math.Pow(-1, i);
+                transform = new Transform3D(new Vector3(i * 30, 4 , position), new Vector3(1, 2, 1));
+                lastPosition = transform.Translation;
+
+                EffectParameters effectParameters = this.effectDictionary[AppData.UnlitWireframeEffectID].Clone() as EffectParameters;
+                effectParameters.DiffuseColor = Color.White;
+                effectParameters.Alpha = 1;
+
+                BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+
+                pickUpObject = new CollidablePrimitiveObject("collidable lit cube " + i,ActorType.CollidablePickup,transform,
+                    effectParameters,StatusType.Drawn | StatusType.Update,this.vertexDictionary[AppData.LitTexturedDiamondVertexDataID],
+                    collisionPrimitive, this.object3DManager);
+
+                this.object3DManager.Add(pickUpObject);
+            }
+
+            a = AppData.turnOneLength / 2;
+            amount = (int)Math.Round(a);
+
+            //Turn One 
+            for (int i = 1; i <= amount+1; i++)
+            {
+                float position = 10 * (float)Math.Pow(-1, i);
+                transform = new Transform3D(new Vector3(((AppData.pathOneLength) * 32) + position, 4, 40 + (20 * i)), new Vector3(1, 2, 1));
+                lastPosition = transform.Translation;
+
+                EffectParameters effectParameters = this.effectDictionary[AppData.UnlitWireframeEffectID].Clone() as EffectParameters;
+                effectParameters.DiffuseColor = Color.White;
+                effectParameters.Alpha = 1;
+
+                BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+
+                pickUpObject = new CollidablePrimitiveObject("collidable lit cube " + i, ActorType.CollidablePickup, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitTexturedDiamondVertexDataID],
+                    collisionPrimitive, this.object3DManager);
+
+                this.object3DManager.Add(pickUpObject);
+            }
+
+            a = AppData.pathTwoLength / 2;
+            amount = (int)Math.Round(a);
+
+            //Path Two
+            for (int i = 1; i <= amount + 1; i++)
+            {
+                //Changes position of the Items to not be in straight line
+                float position = (40 * AppData.turnOneLength) + 10 * (float)Math.Pow(-1, i);
+                transform = new Transform3D(new Vector3((AppData.pathOneLength*30)+ i * 30, 4, position), new Vector3(1, 2, 1));
+                lastPosition = transform.Translation;
+
+                EffectParameters effectParameters = this.effectDictionary[AppData.UnlitWireframeEffectID].Clone() as EffectParameters;
+                effectParameters.DiffuseColor = Color.White;
+                effectParameters.Alpha = 1;
+
+                BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+
+                pickUpObject = new CollidablePrimitiveObject("collidable lit cube " + i, ActorType.CollidablePickup, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitTexturedDiamondVertexDataID],
+                    collisionPrimitive, this.object3DManager);
+
+                this.object3DManager.Add(pickUpObject);
+            }
+
+            //Path Three
+            a = AppData.pathThreeLength / 2;
+            amount = (int)Math.Round(a);
+            int x = AppData.turnOneLength - AppData.turnTwoLength+1;
+            for (int i = 1; i <= amount + 3; i++)
+            {
+                //Changes position of the Items to not be in straight line
+                float position = (40 * x) + 10 * (float)Math.Pow(-1, i);
+                transform = new Transform3D(new Vector3(((AppData.pathOneLength+AppData.pathTwoLength) * 30) + i * 30, 4, position), new Vector3(1, 2, 1));
+                lastPosition = transform.Translation;
+
+                EffectParameters effectParameters = this.effectDictionary[AppData.UnlitWireframeEffectID].Clone() as EffectParameters;
+                effectParameters.DiffuseColor = Color.White;
+                effectParameters.Alpha = 1;
+
+                BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+
+                pickUpObject = new CollidablePrimitiveObject("collidable lit cube " + i, ActorType.CollidablePickup, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitTexturedDiamondVertexDataID],
+                    collisionPrimitive, this.object3DManager);
+
+                this.object3DManager.Add(pickUpObject);
+            }
+
         }
         #endregion
 
@@ -1016,7 +1121,7 @@ namespace GDApp
  
             //load up the particular texture, color, alpha for the player
             EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
-            effectParameters.Texture = this.textureDictionary["Purple"];
+            effectParameters.Texture = this.textureDictionary["Player"];
 
             //make a CDCR surface - sphere or box, its up to you - you dont need to pass transform to either primitive anymore
             ICollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
@@ -1388,15 +1493,15 @@ namespace GDApp
             VertexPositionColor[] vertices = new VertexPositionColor[6];
 
             //Square
-            vertices[0] = new VertexPositionColor(new Vector3(-1, 0, 1), Color.White);
-            vertices[1] = new VertexPositionColor(new Vector3(-1, 0, -1), Color.Yellow);
+            vertices[0] = new VertexPositionColor(new Vector3(-1, 0, 1), Color.Green);
+            vertices[1] = new VertexPositionColor(new Vector3(-1, 0, -1), Color.Green);
             vertices[2] = new VertexPositionColor(new Vector3(1, 0, -1), Color.Green);
-            vertices[3] = new VertexPositionColor(new Vector3(1, 0, 1), Color.Purple);
+            vertices[3] = new VertexPositionColor(new Vector3(1, 0, 1), Color.Green);
 
             //Top
-            vertices[4] = new VertexPositionColor(new Vector3(0, 1, 0), Color.Blue);
+            vertices[4] = new VertexPositionColor(new Vector3(0, 1, 0), Color.Green);
             //Bottom
-            vertices[5] = new VertexPositionColor(new Vector3(0, -1, 0), Color.Red);
+            vertices[5] = new VertexPositionColor(new Vector3(0, -1, 0), Color.Green);
 
             //Used to turn the vertices into the diffrent triangles
             //first triangle on left
@@ -1589,6 +1694,7 @@ namespace GDApp
             this.textureDictionary.Load("Assets/Textures/Colors/RED");
             this.textureDictionary.Load("Assets/Textures/Colors/Black");
             this.textureDictionary.Load("Assets/Textures/Colors/ice");
+            this.textureDictionary.Load("Assets/Textures/Player");
 
 
             #region billboards
@@ -1654,6 +1760,7 @@ namespace GDApp
             //used for UNLIT wireframe primitives
             basicEffect = new BasicEffect(graphics.GraphicsDevice);
             basicEffect.VertexColorEnabled = true;
+
             effectParameters = new EffectParameters(basicEffect);
             this.effectDictionary.Add(AppData.UnlitWireframeEffectID, effectParameters);
 
