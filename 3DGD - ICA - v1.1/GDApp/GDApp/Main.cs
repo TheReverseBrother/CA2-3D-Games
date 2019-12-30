@@ -290,6 +290,7 @@ namespace GDApp
                 InitialiseLevelOneMoveableWalls();
                 InitialiseLevelOneTrackLazer();
                 InitialiseLevelOnePickUps();
+                EndHouse();
             }
             else if (gameLevel == 2)
             {
@@ -889,6 +890,42 @@ namespace GDApp
             }
 
         }
+
+        private void EndHouse()
+        {
+            int z = AppData.turnOneLength - AppData.turnTwoLength + 1;
+            int x = AppData.pathOneLength + AppData.pathTwoLength + AppData.pathThreeLength -2;
+            CollidablePrimitiveObject houseBase = null,roof = null;
+            EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["brick"];
+            Transform3D transform = new Transform3D(new Vector3((x * 40) +10, 10,z* 40), new Vector3(30, 20, 30));
+            BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+
+
+            houseBase = new CollidablePrimitiveObject("base",
+                    ActorType.CollidableGround,
+                    transform,
+                    effectParameters,
+                    StatusType.Drawn | StatusType.Update,
+                    this.vertexDictionary[AppData.LitCube],
+                    collisionPrimitive, this.object3DManager);
+
+            this.object3DManager.Add(houseBase);
+            EffectParameters ef = this.effectDictionary[AppData.UnlitTexturedEffectID].Clone() as EffectParameters;
+            ef.Texture = this.textureDictionary["roof"];
+            transform = new Transform3D(new Vector3((x * 40) + 10, 20, z * 40), new Vector3(30, 20, 30));
+
+
+            roof = new CollidablePrimitiveObject("roof",
+                    ActorType.CollidableGround,
+                    transform,
+                    ef,
+                    StatusType.Drawn | StatusType.Update,
+                    this.vertexDictionary["Pyramid"],
+                    collisionPrimitive, this.object3DManager);
+            this.object3DManager.Add(roof);
+
+        }
         #endregion
 
         #region Non-Collidable Primitive Objects
@@ -1411,8 +1448,12 @@ namespace GDApp
                 primitiveType, primitiveCount));
             #endregion
 
+            this.vertexDictionary.Add("Pyramid",new VertexData<VertexPositionColorTexture>(
+                VertexFactory.GetVerticesPositionTexturedPyramidSquare(1,out primitiveType, out primitiveCount),
+                primitiveType, primitiveCount));
+
             #region Wireframe Circle
-  
+
             this.vertexDictionary.Add(AppData.WireframeCircleVertexDataID, new BufferedVertexData<VertexPositionColor>(
             graphics.GraphicsDevice, VertexFactory.GetCircleVertices(2, 10, out primitiveType, out primitiveCount, OrientationType.XYAxis),
                 PrimitiveType.LineStrip, primitiveCount));
@@ -1675,6 +1716,9 @@ namespace GDApp
 
             //architecture
             this.textureDictionary.Load("Assets/Textures/Architecture/Buildings/house-low-texture");
+            this.textureDictionary.Load("Assets/Textures/Architecture/Buildings/brick");
+            this.textureDictionary.Load("Assets/Textures/Architecture/Buildings/roof");
+
             this.textureDictionary.Load("Assets/Textures/Architecture/Walls/wall");
 
             //dual texture demo - see Main::InitializeCollidableGround()
@@ -1829,22 +1873,6 @@ namespace GDApp
 
             this.cameraManager.Add(camera3D);
         }  
-        private void AddRailCamera(string id, Viewport viewport, ProjectionParameters projectionParameters)
-        {
-            //doesnt matter where the camera starts because we reset immediately inside the RailController
-            Transform3D transform = Transform3D.Zero;
-
-            Camera3D camera3D = new Camera3D(id,
-                ActorType.Camera, transform,
-                ProjectionParameters.StandardMediumFiveThree, viewport,
-                0f, StatusType.Update);
-
-            camera3D.AttachController(new RailController("rc1", ControllerType.Rail,
-                this.drivableModelObject, this.railDictionary["battlefield 1"]));
-
-            this.cameraManager.Add(camera3D);
-
-        }
         private void AddThirdPersonCamera(string id, Viewport viewport, ProjectionParameters projectionParameters)
         {
             Transform3D transform = Transform3D.Zero;
