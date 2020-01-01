@@ -1217,29 +1217,36 @@ namespace GDApp
             sceneID = AppData.MenuMainID;
 
             //retrieve the background texture
-            texture = this.textureDictionary["mainmenu"];
+            texture = this.textureDictionary["snowyBackground"];
             //scale the texture to fit the entire screen
             Vector2 scale = new Vector2((float)graphics.PreferredBackBufferWidth / texture.Width,
                 (float)graphics.PreferredBackBufferHeight / texture.Height);
             transform = new Transform2D(scale);
 
             this.menuManager.Add(sceneID, new UITextureObject("mainmenuTexture", ActorType.UITexture,
-                StatusType.Drawn, //notice we dont need to update a static texture
-                transform, Color.White, SpriteEffects.None,
-                1, //depth is 1 so its always sorted to the back of other menu elements
-                texture));
+                StatusType.Drawn, transform, Color.White, SpriteEffects.None,1,texture));
+
+
+            texture = this.textureDictionary["Banner"];
+            scale = new Vector2(2,2);
+            transform = new Transform2D(new Vector2(80, 40),0,scale,Vector2.One ,Integer2.One);
+
+            this.menuManager.Add(sceneID, new UITextureObject("banner", ActorType.UITexture,
+                StatusType.Drawn,transform, Color.White, SpriteEffects.None,10, texture));
+            
+
 
             //add start button
             buttonID = "startbtn";
             buttonText = "Start";
-            position = new Vector2(graphics.PreferredBackBufferWidth / 2.0f, 200);
-            texture = this.textureDictionary["genericbtn"];
+            position = new Vector2(graphics.PreferredBackBufferWidth / 2.0f, 400);
+            texture = this.textureDictionary["button"];
             transform = new Transform2D(position,
                 0, new Vector2(1.8f, 0.6f),
                 new Vector2(texture.Width / 2.0f, texture.Height / 2.0f), new Integer2(texture.Width, texture.Height));
 
             uiButtonObject = new UIButtonObject(buttonID, ActorType.UIButton, StatusType.Update | StatusType.Drawn,
-                transform, Color.LightPink, SpriteEffects.None, 0.1f, texture, buttonText,
+                transform, Color.Green, SpriteEffects.None, 0.1f, texture, buttonText,
                 this.fontDictionary["menu"],
                 Color.DarkGray, new Vector2(0, 2));
             this.menuManager.Add(sceneID, uiButtonObject);
@@ -1251,7 +1258,7 @@ namespace GDApp
             //move down on Y-axis for next button
             clone.Transform.Translation += new Vector2(0, verticalBtnSeparation);
             //change the texture blend color
-            clone.Color = Color.LightGreen;
+            clone.Color = Color.Purple;
             this.menuManager.Add(sceneID, clone);
 
             //add controls button - clone the audio button then just reset texture, ids etc in all the clones
@@ -1261,7 +1268,7 @@ namespace GDApp
             //move down on Y-axis for next button
             clone.Transform.Translation += new Vector2(0, 2 * verticalBtnSeparation);
             //change the texture blend color
-            clone.Color = Color.LightBlue;
+            clone.Color = Color.Blue;
             this.menuManager.Add(sceneID, clone);
 
             //add exit button - clone the audio button then just reset texture, ids etc in all the clones
@@ -1271,7 +1278,7 @@ namespace GDApp
             //move down on Y-axis for next button
             clone.Transform.Translation += new Vector2(0, 3 * verticalBtnSeparation);
             //change the texture blend color
-            clone.Color = Color.LightYellow;
+            clone.Color = Color.Red;
             //store the original color since if we modify with a controller and need to reset
             clone.OriginalColor = clone.Color;
             this.menuManager.Add(sceneID, clone);
@@ -1281,7 +1288,7 @@ namespace GDApp
             sceneID = AppData.MenuAudioID;
 
             //retrieve the audio menu background texture
-            texture = this.textureDictionary["audiomenu"];
+            texture = this.textureDictionary["snowyBackground"];
             //scale the texture to fit the entire screen
             scale = new Vector2((float)graphics.PreferredBackBufferWidth / texture.Width,
                 (float)graphics.PreferredBackBufferHeight / texture.Height);
@@ -1299,7 +1306,7 @@ namespace GDApp
             clone.ID = "volumeUpbtn";
             clone.Text = "Volume Up";
             //change the texture blend color
-            clone.Color = Color.LightPink;
+            clone.Color = Color.DeepPink;
             this.menuManager.Add(sceneID, clone);
 
             //add volume down button - clone the audio button then just reset texture, ids etc in all the clones
@@ -1309,7 +1316,7 @@ namespace GDApp
             clone.ID = "volumeDownbtn";
             clone.Text = "Volume Down";
             //change the texture blend color
-            clone.Color = Color.LightGreen;
+            clone.Color = Color.ForestGreen;
             this.menuManager.Add(sceneID, clone);
 
             //add volume mute button - clone the audio button then just reset texture, ids etc in all the clones
@@ -1319,7 +1326,7 @@ namespace GDApp
             clone.ID = "volumeMutebtn";
             clone.Text = "Volume Mute";
             //change the texture blend color
-            clone.Color = Color.LightBlue;
+            clone.Color = Color.DeepSkyBlue;
             this.menuManager.Add(sceneID, clone);
 
             //add volume mute button - clone the audio button then just reset texture, ids etc in all the clones
@@ -1329,7 +1336,7 @@ namespace GDApp
             clone.ID = "volumeUnMutebtn";
             clone.Text = "Volume Un-mute";
             //change the texture blend color
-            clone.Color = Color.LightSalmon;
+            clone.Color = Color.Purple;
             this.menuManager.Add(sceneID, clone);
 
             //add back button - clone the audio button then just reset texture, ids etc in all the clones
@@ -1339,7 +1346,7 @@ namespace GDApp
             clone.ID = "backbtn";
             clone.Text = "Back";
             //change the texture blend color
-            clone.Color = Color.LightYellow;
+            clone.Color = Color.Red;
             this.menuManager.Add(sceneID, clone);
             #endregion
 
@@ -1361,11 +1368,218 @@ namespace GDApp
             //add back button - clone the audio button then just reset texture, ids etc in all the clones
             clone = (UIButtonObject)uiButtonObject.Clone();
             //move down on Y-axis for next button
-            clone.Transform.Translation += new Vector2(0, 9 * verticalBtnSeparation);
+            clone.Transform.Translation += new Vector2(0, -320);
             clone.ID = "backbtn";
             clone.Text = "Back";
             //change the texture blend color
-            clone.Color = Color.LightYellow;
+            clone.Color = Color.Red;
+            this.menuManager.Add(sceneID, clone);
+            #endregion
+
+
+            #region endLevelOne
+
+            sceneID = "endLevelOne";
+
+            //retrieve the background texture
+            texture = this.textureDictionary["snowyBackground"];
+            //scale the texture to fit the entire screen
+             scale = new Vector2((float)graphics.PreferredBackBufferWidth / texture.Width,
+                (float)graphics.PreferredBackBufferHeight / texture.Height);
+            transform = new Transform2D(scale);
+
+            this.menuManager.Add(sceneID, new UITextureObject("mainmenuTexture", ActorType.UITexture,
+                StatusType.Drawn, transform, Color.White, SpriteEffects.None, 1, texture));
+
+
+            texture = this.textureDictionary["levelOneComplete"];
+            scale = new Vector2(2, 2);
+            transform = new Transform2D(new Vector2(60, 40), 0, scale, Vector2.One, Integer2.One);
+
+            this.menuManager.Add(sceneID, new UITextureObject("banner", ActorType.UITexture,
+                StatusType.Drawn, transform, Color.White, SpriteEffects.None, 10, texture));
+
+
+
+            //add start button
+            buttonID = "startbtn";
+            buttonText = "Next Level";
+            position = new Vector2(graphics.PreferredBackBufferWidth / 2.0f, 400);
+            texture = this.textureDictionary["button"];
+            transform = new Transform2D(position,
+                0, new Vector2(1.8f, 0.6f),
+                new Vector2(texture.Width / 2.0f, texture.Height / 2.0f), new Integer2(texture.Width, texture.Height));
+
+            uiButtonObject = new UIButtonObject(buttonID, ActorType.UIButton, StatusType.Update | StatusType.Drawn,
+                transform, Color.Green, SpriteEffects.None, 0.1f, texture, buttonText,
+                this.fontDictionary["menu"],
+                Color.DarkGray, new Vector2(0, 2));
+            this.menuManager.Add(sceneID, uiButtonObject);
+
+            //add exit button - clone the audio button then just reset texture, ids etc in all the clones
+            clone = (UIButtonObject)uiButtonObject.Clone();
+            clone.ID = "exitbtn";
+            clone.Text = "Exit";
+            //move down on Y-axis for next button
+            clone.Transform.Translation += new Vector2(0, verticalBtnSeparation);
+            //change the texture blend color
+            clone.Color = Color.Red;
+            //store the original color since if we modify with a controller and need to reset
+            clone.OriginalColor = clone.Color;
+            this.menuManager.Add(sceneID, clone);
+            #endregion
+
+            #region Game Over
+
+            sceneID = "Game Over";
+
+            //retrieve the background texture
+            texture = this.textureDictionary["snowyBackground"];
+            //scale the texture to fit the entire screen
+            scale = new Vector2((float)graphics.PreferredBackBufferWidth / texture.Width,
+               (float)graphics.PreferredBackBufferHeight / texture.Height);
+            transform = new Transform2D(scale);
+
+            this.menuManager.Add(sceneID, new UITextureObject("mainmenuTexture", ActorType.UITexture,
+                StatusType.Drawn, transform, Color.White, SpriteEffects.None, 1, texture));
+
+
+            texture = this.textureDictionary["gameOver"];
+            scale = new Vector2(2, 2);
+            transform = new Transform2D(new Vector2(60, 40), 0, scale, Vector2.One, Integer2.One);
+
+            this.menuManager.Add(sceneID, new UITextureObject("banner", ActorType.UITexture,
+                StatusType.Drawn, transform, Color.White, SpriteEffects.None, 10, texture));
+
+
+
+            //add start button
+            buttonID = "restart";
+            buttonText = "Restart Level";
+            position = new Vector2(graphics.PreferredBackBufferWidth / 2.0f, 400);
+            texture = this.textureDictionary["button"];
+            transform = new Transform2D(position,
+                0, new Vector2(1.8f, 0.6f),
+                new Vector2(texture.Width / 2.0f, texture.Height / 2.0f), new Integer2(texture.Width, texture.Height));
+
+            uiButtonObject = new UIButtonObject(buttonID, ActorType.UIButton, StatusType.Update | StatusType.Drawn,
+                transform, Color.Green, SpriteEffects.None, 0.1f, texture, buttonText,
+                this.fontDictionary["menu"],
+                Color.DarkGray, new Vector2(0, 2));
+            this.menuManager.Add(sceneID, uiButtonObject);
+
+            //add exit button - clone the audio button then just reset texture, ids etc in all the clones
+            clone = (UIButtonObject)uiButtonObject.Clone();
+            clone.ID = "exitbtn";
+            clone.Text = "Exit";
+            //move down on Y-axis for next button
+            clone.Transform.Translation += new Vector2(0, verticalBtnSeparation);
+            //change the texture blend color
+            clone.Color = Color.Red;
+            //store the original color since if we modify with a controller and need to reset
+            clone.OriginalColor = clone.Color;
+            this.menuManager.Add(sceneID, clone);
+            #endregion
+
+            #region Complete Game
+            sceneID = "win";
+
+            //retrieve the background texture
+            texture = this.textureDictionary["snowyBackground"];
+            //scale the texture to fit the entire screen
+            scale = new Vector2((float)graphics.PreferredBackBufferWidth / texture.Width,
+               (float)graphics.PreferredBackBufferHeight / texture.Height);
+            transform = new Transform2D(scale);
+
+            this.menuManager.Add(sceneID, new UITextureObject("mainmenuTexture", ActorType.UITexture,
+                StatusType.Drawn, transform, Color.White, SpriteEffects.None, 1, texture));
+
+
+            texture = this.textureDictionary["gameOver"];
+            scale = new Vector2(2, 2);
+            transform = new Transform2D(new Vector2(60, 40), 0, scale, Vector2.One, Integer2.One);
+
+            this.menuManager.Add(sceneID, new UITextureObject("banner", ActorType.UITexture,
+                StatusType.Drawn, transform, Color.White, SpriteEffects.None, 10, texture));
+
+
+
+            //add start button
+            buttonID = "restart";
+            buttonText = "Restart Game";
+            position = new Vector2(graphics.PreferredBackBufferWidth / 2.0f, 400);
+            texture = this.textureDictionary["button"];
+            transform = new Transform2D(position,
+                0, new Vector2(1.8f, 0.6f),
+                new Vector2(texture.Width / 2.0f, texture.Height / 2.0f), new Integer2(texture.Width, texture.Height));
+
+            uiButtonObject = new UIButtonObject(buttonID, ActorType.UIButton, StatusType.Update | StatusType.Drawn,
+                transform, Color.Green, SpriteEffects.None, 0.1f, texture, buttonText,
+                this.fontDictionary["menu"],
+                Color.DarkGray, new Vector2(0, 2));
+            this.menuManager.Add(sceneID, uiButtonObject);
+
+            //add exit button - clone the audio button then just reset texture, ids etc in all the clones
+            clone = (UIButtonObject)uiButtonObject.Clone();
+            clone.ID = "exitbtn";
+            clone.Text = "Exit";
+            //move down on Y-axis for next button
+            clone.Transform.Translation += new Vector2(0, verticalBtnSeparation);
+            //change the texture blend color
+            clone.Color = Color.Red;
+            //store the original color since if we modify with a controller and need to reset
+            clone.OriginalColor = clone.Color;
+            this.menuManager.Add(sceneID, clone);
+            #endregion
+
+            #region Level One Complete
+            sceneID = "beatLevel";
+
+            //retrieve the background texture
+            texture = this.textureDictionary["snowyBackground"];
+            //scale the texture to fit the entire screen
+            scale = new Vector2((float)graphics.PreferredBackBufferWidth / texture.Width,
+               (float)graphics.PreferredBackBufferHeight / texture.Height);
+            transform = new Transform2D(scale);
+
+            this.menuManager.Add(sceneID, new UITextureObject("mainmenuTexture", ActorType.UITexture,
+                StatusType.Drawn, transform, Color.White, SpriteEffects.None, 1, texture));
+
+
+            texture = this.textureDictionary["levelOneComplete"];
+            scale = new Vector2(2, 2);
+            transform = new Transform2D(new Vector2(60, 40), 0, scale, Vector2.One, Integer2.One);
+
+            this.menuManager.Add(sceneID, new UITextureObject("banner", ActorType.UITexture,
+                StatusType.Drawn, transform, Color.White, SpriteEffects.None, 10, texture));
+
+
+
+            //add start button
+            buttonID = "nextLevel";
+            buttonText = "Next Level";
+            position = new Vector2(graphics.PreferredBackBufferWidth / 2.0f, 400);
+            texture = this.textureDictionary["button"];
+            transform = new Transform2D(position,
+                0, new Vector2(1.8f, 0.6f),
+                new Vector2(texture.Width / 2.0f, texture.Height / 2.0f), new Integer2(texture.Width, texture.Height));
+
+            uiButtonObject = new UIButtonObject(buttonID, ActorType.UIButton, StatusType.Update | StatusType.Drawn,
+                transform, Color.Green, SpriteEffects.None, 0.1f, texture, buttonText,
+                this.fontDictionary["menu"],
+                Color.DarkGray, new Vector2(0, 2));
+            this.menuManager.Add(sceneID, uiButtonObject);
+
+            //add exit button - clone the audio button then just reset texture, ids etc in all the clones
+            clone = (UIButtonObject)uiButtonObject.Clone();
+            clone.ID = "exitbtn";
+            clone.Text = "Exit";
+            //move down on Y-axis for next button
+            clone.Transform.Translation += new Vector2(0, verticalBtnSeparation);
+            //change the texture blend color
+            clone.Color = Color.Red;
+            //store the original color since if we modify with a controller and need to reset
+            clone.OriginalColor = clone.Color;
             this.menuManager.Add(sceneID, clone);
             #endregion
         }
@@ -1701,11 +1915,16 @@ namespace GDApp
             //this.textureDictionary.Load("Assets/Textures/Foliage/Ground/grass_midlevel");
             //this.textureDictionary.Load("Assets/Textures/Foliage/Ground/grass_highlevel");
 
+            //Menu- Banner
+            this.textureDictionary.Load("Assets/Textures/UI/Menu/Banner");
+            this.textureDictionary.Load("Assets/Textures/UI/Menu/gameOver");
+            this.textureDictionary.Load("Assets/Textures/UI/Menu/levelOneComplete");
+            this.textureDictionary.Load("Assets/Textures/UI/Menu/win");
             //menu - buttons
-            this.textureDictionary.Load("Assets/Textures/UI/Menu/Buttons/genericbtn");
+            this.textureDictionary.Load("Assets/Textures/UI/Menu/Buttons/button");
 
             //menu - backgrounds
-            this.textureDictionary.Load("Assets/Textures/UI/Menu/Backgrounds/mainmenu");
+            this.textureDictionary.Load("Assets/Textures/UI/Menu/Backgrounds/snowyBackground");
             this.textureDictionary.Load("Assets/Textures/UI/Menu/Backgrounds/audiomenu");
             this.textureDictionary.Load("Assets/Textures/UI/Menu/Backgrounds/controlsmenu");
             this.textureDictionary.Load("Assets/Textures/UI/Menu/Backgrounds/exitmenuwithtrans");
