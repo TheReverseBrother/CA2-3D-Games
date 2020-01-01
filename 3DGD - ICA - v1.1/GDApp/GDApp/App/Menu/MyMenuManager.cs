@@ -101,8 +101,12 @@ namespace GDApp
                         break;
 
                     case "controlsbtn":
-                        SetActiveList(AppData.MenuControlsID); //use sceneIDs specified when we created the menu scenes in Main::AddMenuElements()
-                        break;
+                    SetActiveList(AppData.MenuControlsID); //use sceneIDs specified when we created the menu scenes in Main::AddMenuElements()
+                    //SetActiveList("endLevelOne");
+                    //SetActiveList("Game Over");
+                    //SetActiveList("win");
+                    //SetActiveList("beatLevel");
+                    break;
 
                     default:
                         break;
