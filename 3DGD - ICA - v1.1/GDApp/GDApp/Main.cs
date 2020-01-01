@@ -290,7 +290,7 @@ namespace GDApp
                 InitialiseLevelOneMoveableWalls();
                 InitialiseLevelOneTrackLazer();
                 InitialiseLevelOnePickUps();
-                EndHouse();
+                InitializeEndHouse();
             }
             else if (gameLevel == 2)
             {
@@ -891,7 +891,7 @@ namespace GDApp
 
         }
 
-        private void EndHouse()
+        private void InitializeEndHouse()
         {
             int z = AppData.turnOneLength - AppData.turnTwoLength + 1;
             int x = AppData.pathOneLength + AppData.pathTwoLength + AppData.pathThreeLength -2;
