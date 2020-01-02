@@ -102,6 +102,11 @@ namespace GDLibrary
             return this.cameraList.RemoveAll(predicate);
         }
 
+        public Camera3D Find(Predicate<Camera3D> predicate)
+        {
+            return this.cameraList.Find(predicate);
+        }
+
         public bool SetActiveCamera(Predicate<Camera3D> predicate)
         {
             int index = this.cameraList.FindIndex(predicate);

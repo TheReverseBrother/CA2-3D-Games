@@ -59,6 +59,12 @@ namespace GDLibrary
         protected virtual void RegisterForEventHandling(EventDispatcher eventDispatcher)
         {
             this.eventDispatcher.MenuChanged += EventDispatcher_MenuChanged;
+            this.eventDispatcher.gameStateChanged += EventDispatcher_GameOverMenu;
+        }
+
+        protected virtual void EventDispatcher_GameOverMenu(EventData eventData)
+        {
+            
         }
 
         protected virtual void EventDispatcher_MenuChanged(EventData eventData)

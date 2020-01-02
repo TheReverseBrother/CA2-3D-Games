@@ -73,16 +73,20 @@ namespace GDLibrary
             }
             else if(collidee is CollidablePrimitiveObject)
             {
-                //the boxes on the left that we loaded from level loader
                 if(collidee.ActorType == ActorType.CollidablePickup)
                 {
                     //remove the object
                     EventDispatcher.Publish(new EventData(collidee, EventActionType.OnRemoveActor, EventCategoryType.SystemRemove));
+                    //Add To Score
                 }
-                //the boxes on the right that move up and down
-                else if (collidee.ActorType == ActorType.CollidableArchitecture)
+                else if (collidee.ActorType == ActorType.CollidableLazer)
                 {
-                    (collidee as DrawnActor3D).EffectParameters.DiffuseColor = Color.Blue;
+                    EventDispatcher.Publish(new EventData(EventActionType.OnPause, EventCategoryType.Menu));
+                    EventDispatcher.Publish(new EventData(EventActionType.OnLose,EventCategoryType.GameOver));
+                }
+                else
+                {
+
                 }
             }
         }

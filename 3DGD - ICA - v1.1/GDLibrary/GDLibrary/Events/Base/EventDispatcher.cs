@@ -35,6 +35,8 @@ namespace GDLibrary
         public delegate void DebugEventHandler(EventData eventData);
         public delegate void VideoEventHandler(EventData eventData);
         public delegate void TextRenderEventHandler(EventData eventData);
+        public delegate void GameOver(EventData eventData);
+        public delegate void Restart(EventData eventData);
 
         //an event is either null (not yet happened) or non-null - when the event occurs the delegate reads through its list and calls all the listening functions
         public event CameraEventHandler CameraChanged;
@@ -51,6 +53,9 @@ namespace GDLibrary
         public event DebugEventHandler DebugChanged;
         public event VideoEventHandler VideoChanged;
         public event TextRenderEventHandler TextRenderChanged;
+        public event GameOver gameStateChanged;
+        public event Restart restartGane;
+
 
 
         public EventDispatcher(Game game, int initialSize)
@@ -147,7 +152,12 @@ namespace GDLibrary
                 case EventCategoryType.TextRender:
                     OnTextRender(eventData);
                     break;
-
+                case EventCategoryType.GameOver:
+                    GameOverChange(eventData);
+                    break;
+                case EventCategoryType.restart:
+                    RestartEvent(eventData);
+                    break;
                 default:
                     break;
             }
@@ -159,6 +169,16 @@ namespace GDLibrary
         {
             if (VideoChanged != null)
                 VideoChanged(eventData);
+        }
+
+        protected virtual void RestartEvent(EventData eventData)
+        {
+            restartGane?.Invoke(eventData);
+        }
+
+        protected virtual void GameOverChange(EventData eventData)
+        {
+            gameStateChanged?.Invoke(eventData);
         }
 
         //called when a text renderer event needs to be generated e.g. alarm in sector 2

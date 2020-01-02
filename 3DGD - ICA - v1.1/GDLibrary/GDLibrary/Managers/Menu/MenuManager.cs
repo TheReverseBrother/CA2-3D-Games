@@ -73,6 +73,15 @@ namespace GDLibrary
                 this.isVisible = true;
             }
         }
+
+        protected override void EventDispatcher_GameOverMenu(EventData eventData)
+        {
+            SetActiveList("Game Over");
+            base.EventDispatcher_GameOverMenu(eventData);
+        }
+
+
+
         #endregion
 
         public void Add(string menuSceneID, DrawnActor2D actor)

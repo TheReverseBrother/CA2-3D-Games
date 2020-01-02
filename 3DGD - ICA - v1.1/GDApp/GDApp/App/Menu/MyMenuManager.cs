@@ -99,7 +99,9 @@ namespace GDApp
                     case "backbtn":
                         SetActiveList(AppData.MenuMainID); //use sceneIDs specified when we created the menu scenes in Main::AddMenuElements()
                         break;
-
+                    case "restartbtn":
+                    DoRestart();
+                    break;
                     case "controlsbtn":
                     SetActiveList(AppData.MenuControlsID); //use sceneIDs specified when we created the menu scenes in Main::AddMenuElements()
                     //SetActiveList("endLevelOne");
@@ -128,6 +130,14 @@ namespace GDApp
             //will be received by the menu manager and screen manager and set the menu to be shown and game to be paused
             EventDispatcher.Publish(new EventData(EventActionType.OnStart, EventCategoryType.Menu));
         }
+
+        private void DoRestart()
+        {
+            //will be received by the menu manager and screen manager and set the menu to be shown and game to be paused
+            EventDispatcher.Publish(new EventData(EventActionType.OnStart, EventCategoryType.restart));
+            EventDispatcher.Publish(new EventData(EventActionType.OnStart, EventCategoryType.Menu));
+        }
+
 
         private void DoExit()
         {

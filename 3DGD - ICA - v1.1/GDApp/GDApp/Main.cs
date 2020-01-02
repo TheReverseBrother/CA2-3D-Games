@@ -34,7 +34,8 @@ namespace GDApp
         private PickingManager pickingManager;
         private SoundManager soundManager;
         private MyMenuManager menuManager;
-
+        private int worldScale = 1250;
+        private int gameLevel = 1;
         private CameraLayoutType cameraLayoutType;
         private ScreenLayoutType screenLayoutType;
         private UIManager uiManager;
@@ -90,11 +91,11 @@ namespace GDApp
 
             #region Load Game
             //load game happens before cameras are loaded because we may add a third person camera that needs a reference to a loaded Actor
-            int worldScale = 1250;
-            int gameLevel = 1;
+
             LoadGame(worldScale, gameLevel);
             #endregion
 
+            RegisterEvents();
             #region Cameras
             InitializeCameras();
             #endregion
@@ -283,7 +284,7 @@ namespace GDApp
             if (gameLevel == 1)
             {
                 InitializeCollidablePlayer();
-                InitializeLevelOneSineTrackLaser();
+                //InitializeLevelOneSineTrackLaser();
                 InitializeLevelOnePath();
                 InitializeLevelOneWalls();
                 InitialiseLevelOneSineLazer();
@@ -1204,6 +1205,28 @@ namespace GDApp
         #endregion
         #endregion
 
+        #region Events
+        private void RegisterEvents()
+        {
+            this.eventDispatcher.restartGane += restartGame;
+        }
+
+        private void restartGame(EventData eventData)
+        {
+            Predicate<Camera3D> pred = s => s.ID == AppData.CameraIDThirdPerson;
+            Camera3D cam = this.cameraManager.Find(pred);
+            cam.ID = "x";
+
+            
+            LoadGame(worldScale,gameLevel);
+            InitializeCameras();
+            Predicate<Camera3D> pred2 = s => s.ID == AppData.CameraIDThirdPerson;
+
+            this.cameraManager.SetActiveCamera(pred2);
+            
+        }
+        
+        #endregion
         private void InitializeMenu()
         {
             Transform2D transform = null;
@@ -1454,7 +1477,7 @@ namespace GDApp
 
 
             //add start button
-            buttonID = "restart";
+            buttonID = "restartbtn";
             buttonText = "Restart Level";
             position = new Vector2(graphics.PreferredBackBufferWidth / 2.0f, 400);
             texture = this.textureDictionary["button"];
