@@ -31,7 +31,6 @@ namespace GDApp
         private Dictionary<string, IVertexData> vertexDictionary;
         private Dictionary<string, DrawnActor3D> objectArchetypeDictionary;
         private EventDispatcher eventDispatcher;
-        private PickingManager pickingManager;
         private SoundManager soundManager;
         private MyMenuManager menuManager;
         private int worldScale = 1250;
@@ -173,10 +172,7 @@ namespace GDApp
             this.uiManager.DrawOrder = 3;
             Components.Add(this.uiManager);
 
-            //picking
-            this.pickingManager = new PickingManager(this, this.eventDispatcher, StatusType.Update,
-               this.inputManagerParameters, this.cameraManager, this.object3DManager, PickingBehaviourType.PickAndRemove);
-            Components.Add(this.pickingManager);
+            
         }
 
         private void InitializeUI()
@@ -187,69 +183,19 @@ namespace GDApp
 
         private void InitializeUIProgress()
         {
-            float separation = 20; //spacing between progress bars
+            Vector2 scale = new Vector2(2, 2);
 
-            Transform2D transform = null;
-            Texture2D texture = null;
-            UITextureObject textureObject = null;
-            Vector2 position = Vector2.Zero;
-            Vector2 scale = Vector2.Zero;
-            float verticalOffset = 20;
-            int startValue;
-
-            texture = this.textureDictionary["progress_gradient"];
-            scale = new Vector2(1, 0.75f);
-
-            #region Player 1 Progress Bar
-            position = new Vector2(graphics.PreferredBackBufferWidth / 2.0f - texture.Width * scale.X - separation, verticalOffset);
-            transform = new Transform2D(position, 0, scale,
-                Vector2.Zero, /*new Vector2(texture.Width/2.0f, texture.Height/2.0f),*/
-                new Integer2(texture.Width, texture.Height));
-
-            textureObject = new UITextureObject(AppData.PlayerOneProgressID,
-                    ActorType.UITexture,
-                    StatusType.Drawn | StatusType.Update,
-                    transform, Color.Green,
-                    SpriteEffects.None,
-                    1,
-                    texture);
-
-            //add a controller which listens for pickupeventdata send when the player (or red box) collects the box on the left
-            startValue = 0; //just a random number between 0 and max to demonstrate we can set initial progress value
-            textureObject.AttachController(
-                new UIProgressController(AppData.PlayerOneProgressControllerID, 
-                ControllerType.UIProgress, startValue, 10, this.eventDispatcher));
-
-            textureObject.AttachController(
-                new UIProgressIncrementController("bla",
-                ControllerType.UIProgressIncrement,
-                PlayStatusType.Play,
-                AppData.PlayerOneProgressControllerID, //send an event to this controller ID
-                1000, //1 sec between update
-                1)); //add 1 every 1 sec
-
-            this.uiManager.Add(textureObject);
-            #endregion
+            float xAlign = (graphics.PreferredBackBufferWidth / 2) -70;
+            Transform2D transform = new Transform2D(new Vector2(xAlign,0),0,scale,Vector2.One,new Integer2(10,10));
 
 
-            #region Player 2 Progress Bar
-            position = new Vector2(graphics.PreferredBackBufferWidth / 2.0f + separation, verticalOffset);
-            transform = new Transform2D(position, 0, scale, Vector2.Zero, new Integer2(texture.Width, texture.Height));
+            UITextObject score = new UITextObject("Score",ActorType.UIText, StatusType.Drawn | StatusType.Update,transform
+                ,Color.NavajoWhite,SpriteEffects.None,10,"Score: 0", this.fontDictionary["debugFont"]);
 
-            textureObject = new UITextureObject(AppData.PlayerTwoProgressID,
-                    ActorType.UITexture,
-                    StatusType.Drawn | StatusType.Update,
-                    transform,
-                    Color.Red,
-                    SpriteEffects.None,
-                    1,
-                    texture);
 
-            //add a controller which listens for pickupeventdata send when the player (or red box) collects the box on the left
-            startValue = 4; //just a random number between 0 and max to demonstrate we can set initial progress value
-            textureObject.AttachController(new UIProgressController(AppData.PlayerTwoProgressControllerID, ControllerType.UIProgress, startValue, 10, this.eventDispatcher));
-            this.uiManager.Add(textureObject);
-            #endregion
+            score.AttachController(new UIProgressController("id",ControllerType.UIProgress,score,this.eventDispatcher));
+            this.uiManager.Add(score);
+
         }
 
         private void InitializeUIMouse()
@@ -282,9 +228,8 @@ namespace GDApp
             this.object3DManager.Clear();
       
             if (gameLevel == 1)
-            {
-                InitializeCollidablePlayer();
-                //InitializeLevelOneSineTrackLaser();
+            {     
+                InitializeLevelOneSineTrackLaser();
                 InitializeLevelOnePath();
                 InitializeLevelOneWalls();
                 InitialiseLevelOneSineLazer();
@@ -292,6 +237,7 @@ namespace GDApp
                 InitialiseLevelOneTrackLazer();
                 InitialiseLevelOnePickUps();
                 InitializeEndHouse();
+                InitializeCollidablePlayer();
             }
             else if (gameLevel == 2)
             {
@@ -527,11 +473,12 @@ namespace GDApp
         {
             #region Common Attributes
             CollidablePrimitiveObject collidablePrimitiveObject = null,hilt = null;
-            Transform3D transform = new Transform3D(new Vector3((40*AppData.pathOneLength-1)-10,10,40*AppData.turnOneLength),new Vector3(1,30,1));
+            Vector3 startPosition = new Vector3((40 * AppData.pathOneLength - 1), 10, (40 * AppData.turnOneLength) - 10);
+
+            Transform3D transform = new Transform3D(startPosition,new Vector3(1,30,1));
             BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
             EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
             effectParameters.Texture = this.textureDictionary["RED"];
-            Vector3 startPosition = new Vector3((40 * AppData.pathOneLength - 1), 10, (40 * AppData.turnOneLength) - 10);
             Vector3 endPosition = new Vector3(40 * (AppData.pathOneLength + AppData.pathTwoLength - 2), 10, 40 * AppData.turnOneLength + 10);
 
             float distance = Vector3.Distance(startPosition, endPosition);
@@ -562,7 +509,7 @@ namespace GDApp
             track3D.Add(startPosition, -Vector3.UnitZ, Vector3.UnitY, 6);
 
 
-            Track3DController track = new Track3DController("Vertical Laser",ControllerType.Track, track3D, PlayStatusType.Play);
+            Track3DController track = new Track3DController("Vertical Laser", ControllerType.Track, track3D, PlayStatusType.Play);
 
             collidablePrimitiveObject.AttachController(track);
             #endregion
@@ -571,19 +518,21 @@ namespace GDApp
             #endregion
 
             #region Hilt
-            Transform3D transform3D = new Transform3D(new Vector3((40 * AppData.pathOneLength - 1) - 10, 30, 40 * AppData.turnOneLength), new Vector3(2, 5, 2));
-            EffectParameters effectParameters2 = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
-            effectParameters2.Texture = this.textureDictionary["Black"];
-            hilt = new CollidablePrimitiveObject("Hilt",ActorType.CollidableLazer,transform3D,effectParameters2,
-                StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
-            #region Track
             Vector3 adjustment = new Vector3(0, 15, 0);
             Vector3 hiltStart = startPosition + adjustment;
+            Transform3D transform3D = new Transform3D(hiltStart, new Vector3(2, 5, 2));
+            EffectParameters effectParameters2 = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters2.Texture = this.textureDictionary["Black"];
+            collisionPrimitive = new BoxCollisionPrimitive();
+            hilt = new CollidablePrimitiveObject("Hilt",ActorType.CollidableArchitecture,transform3D,effectParameters2,
+                StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+            #region Track
+
             Vector3 hiltEnd = endPosition + adjustment;
             Vector3 hiltCurveOne = firstCurve + adjustment;
             Vector3 hiltCurveTwo = secondCurve + adjustment;
 
-          
+
             Track3D trackPositions = new Track3D(CurveLoopType.Cycle);
 
 
@@ -600,7 +549,7 @@ namespace GDApp
             trackPositions.Add(hiltCurveOne, -Vector3.UnitZ, Vector3.UnitY, 5);
 
             trackPositions.Add(hiltStart, -Vector3.UnitZ, Vector3.UnitY, 6);
-   
+
 
 
             Track3DController trackController = new Track3DController("Vertical Laser", ControllerType.Track, trackPositions, PlayStatusType.Play);
