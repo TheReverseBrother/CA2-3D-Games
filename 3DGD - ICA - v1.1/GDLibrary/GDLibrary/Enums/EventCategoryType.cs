@@ -36,7 +36,7 @@ namespace GDLibrary
         Debug,
         Video,
         TextRender,
-        GameOver,
+        PauseAndChangeMenu,
         restart,
     }
 }

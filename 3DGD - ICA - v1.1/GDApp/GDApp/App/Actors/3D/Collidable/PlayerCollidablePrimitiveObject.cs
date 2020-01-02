@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using GDApp;
+using System;
 
 namespace GDLibrary
 {
@@ -75,16 +76,15 @@ namespace GDLibrary
             {
                 if(collidee.ActorType == ActorType.CollidablePickup)
                 {
-                    //remove the object
+                    //Remove The Object Add to Score
                     EventDispatcher.Publish(new EventData(collidee, EventActionType.OnRemoveActor, EventCategoryType.SystemRemove));
-                    //Add To Score
                 }
                 else if (collidee.ActorType == ActorType.CollidableLazer)
                 {
                     EventDispatcher.Publish(new EventData(EventActionType.OnPause, EventCategoryType.Menu));
-                    EventDispatcher.Publish(new EventData(EventActionType.OnLose,EventCategoryType.GameOver));
+                    EventDispatcher.Publish(new EventData(EventActionType.GameOver,EventCategoryType.PauseAndChangeMenu));
                 }
-                else
+                else 
                 {
 
                 }

@@ -76,7 +76,19 @@ namespace GDLibrary
 
         protected override void EventDispatcher_GameOverMenu(EventData eventData)
         {
-            SetActiveList("Game Over");
+            switch(eventData.EventType)
+            {
+                case EventActionType.GameOver:
+                    SetActiveList("Game Over");
+                    break;
+                case EventActionType.LevelOneComplete:
+                    SetActiveList("beatLevel");
+                    break;
+                case EventActionType.GameComplete:
+                    SetActiveList("win");
+                    break;
+            }
+           
             base.EventDispatcher_GameOverMenu(eventData);
         }
 

@@ -60,5 +60,8 @@ namespace GDLibrary
         OnNonePicked,
         OnAddActor2D,
         OnRemoveActor2D,
+        GameOver,
+        LevelOneComplete,
+        GameComplete,
     }
 }

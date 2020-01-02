@@ -152,7 +152,7 @@ namespace GDLibrary
                 case EventCategoryType.TextRender:
                     OnTextRender(eventData);
                     break;
-                case EventCategoryType.GameOver:
+                case EventCategoryType.PauseAndChangeMenu:
                     GameOverChange(eventData);
                     break;
                 case EventCategoryType.restart:
