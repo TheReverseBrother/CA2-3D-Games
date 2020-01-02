@@ -853,7 +853,7 @@ namespace GDApp
 
 
             houseBase = new CollidablePrimitiveObject("base",
-                    ActorType.CollidableGround,
+                    ActorType.LevelOneFinish,
                     transform,
                     effectParameters,
                     StatusType.Drawn | StatusType.Update,
@@ -865,7 +865,7 @@ namespace GDApp
             ef.Texture = this.textureDictionary["roof"];
             transform = new Transform3D(new Vector3((x * 40) + 10, 20, z * 40), new Vector3(30, 20, 30));
 
-
+            collisionPrimitive = new BoxCollisionPrimitive();
             roof = new CollidablePrimitiveObject("roof",
                     ActorType.CollidableGround,
                     transform,

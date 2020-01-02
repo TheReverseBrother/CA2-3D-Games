@@ -84,9 +84,10 @@ namespace GDLibrary
                     EventDispatcher.Publish(new EventData(EventActionType.OnPause, EventCategoryType.Menu));
                     EventDispatcher.Publish(new EventData(EventActionType.GameOver,EventCategoryType.PauseAndChangeMenu));
                 }
-                else 
+                else if(collidee.ActorType == ActorType.LevelOneFinish)
                 {
-
+                    EventDispatcher.Publish(new EventData(EventActionType.OnPause, EventCategoryType.Menu));
+                    EventDispatcher.Publish(new EventData(EventActionType.LevelOneComplete, EventCategoryType.PauseAndChangeMenu));
                 }
             }
         }

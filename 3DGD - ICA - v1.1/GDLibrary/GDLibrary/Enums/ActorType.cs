@@ -35,6 +35,7 @@ namespace GDLibrary
         UIButton,
         UIText,
         UITexture,
+        LevelOneFinish,
     }
 }
 
