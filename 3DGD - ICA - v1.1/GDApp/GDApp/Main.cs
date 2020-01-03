@@ -34,7 +34,7 @@ namespace GDApp
         private SoundManager soundManager;
         private MyMenuManager menuManager;
         private int worldScale = 1250;
-        private int gameLevel = 1;
+        private int gameLevel = 2;
         private CameraLayoutType cameraLayoutType;
         private ScreenLayoutType screenLayoutType;
         private UIManager uiManager;
@@ -241,7 +241,8 @@ namespace GDApp
             }
             else if (gameLevel == 2)
             {
-                //add different things for your next level
+                InitializeLevelTwoPath();
+                InitializeCollidablePlayer();
             }
         }
 
@@ -878,6 +879,106 @@ namespace GDApp
         }
         #endregion
 
+        #region Level Two
+        private void InitializeLevelTwoPath()
+        {
+            CollidablePrimitiveObject forwardFloorBlock = null, cloneItem = null;
+            EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["LightBlue"];
+            Vector3 lastPosition = Vector3.Zero;
+            Transform3D transform = new Transform3D(new Vector3(10, -3, 40), new Vector3(40, 8, 40));
+            BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+
+
+            //Template Block All Blocks Copy it
+            forwardFloorBlock = new CollidablePrimitiveObject("collidable lit cube ",
+                    //this is important as it will determine how we filter collisions in our collidable player CDCR code
+                    ActorType.CollidableGround,
+                    transform,
+                    effectParameters,
+                    StatusType.Drawn | StatusType.Update,
+                    this.vertexDictionary[AppData.LitCube],
+                    collisionPrimitive, this.object3DManager);
+            #region Generate Path
+            //Use For Loop to create the paths
+            for (int i = 0; i < AppData.LevelTwoPathOneLength; i++)
+            {
+                cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(0, 0, 40 * (i * AppData.LevelTwoPathOneDirection));
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+
+            //Sets the Forward block to be last position of the new path
+            forwardFloorBlock.Transform.Translation = lastPosition;
+
+            for (int i = 1; i < AppData.LevelTwoTurnOneLength; i++)
+            {
+                cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(40 * (i * AppData.LevelTwoTurnTwoDirection), 0, 0);
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+
+            forwardFloorBlock.Transform.Translation = lastPosition;
+            for (int i = 0; i < AppData.LevelTwoPathTwoLength; i++)
+            {
+                cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(0, 0, 40 * (i * AppData.LevelTwoPathTwoDirection));
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+            forwardFloorBlock.Transform.Translation = lastPosition;
+
+
+            for (int i = 1; i < AppData.LevelTwoTurnTwoLength; i++)
+            {
+                cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(40 * (i * AppData.LevelTwoTurnTwoDirection), 0, 0);
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+            forwardFloorBlock.Transform.Translation = lastPosition;
+
+            forwardFloorBlock.Transform.Translation = lastPosition;
+            for (int i = 0; i < AppData.LevelTwoPathThreeLength; i++)
+            {
+                cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(0, 0, 40 * (i * AppData.LevelTwoPathThreeDirection));
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+            forwardFloorBlock.Transform.Translation = lastPosition;
+
+            for (int i = 1; i < AppData.LevelTwoTurnThreeLength; i++)
+            {
+                cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(40 * (i * AppData.LevelTwoTurnThreeDirection), 0, 0);
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+            forwardFloorBlock.Transform.Translation = lastPosition;
+
+            forwardFloorBlock.Transform.Translation = lastPosition;
+            for (int i = 0; i < AppData.LevelTwoPathFourLength; i++)
+            {
+                cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(0, 0, 40 * (i * AppData.LevelTwoPathFourDirection));
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+            forwardFloorBlock.Transform.Translation = lastPosition;
+
+            #endregion
+        }
+        #endregion
         #region Non-Collidable Primitive Objects
         private void InitializeNonCollidableProps()
         {

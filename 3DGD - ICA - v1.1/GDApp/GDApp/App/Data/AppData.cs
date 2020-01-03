@@ -168,12 +168,40 @@ namespace GDLibrary
 
 
         #region Level generation
+
+        #region Level One
         public static readonly int pathOneLength = 4;
         public static readonly int turnOneLength = 3;
         public static readonly int pathTwoLength = 4;
         public static readonly int turnTwoLength = 5;
         public static readonly int pathThreeLength = 5;
         public static int direction = 1; //Changes Direction of path generation
+        #endregion
+
+        #region Level Two
+        public static readonly int LevelTwoPathOneLength = 5;
+        public static readonly int LevelTwoPathOneDirection = 1;
+
+        public static readonly int LevelTwoPathTwoLength = 4;
+        public static readonly int LevelTwoPathTwoDirection = 1;
+
+        public static readonly int LevelTwoPathThreeLength = 5;
+        public static readonly int LevelTwoPathThreeDirection = -1;
+
+        public static readonly int LevelTwoPathFourLength = 7;
+        public static readonly int LevelTwoPathFourDirection = -1;
+
+        public static readonly int branchPathLength = 4;
+
+        public static readonly int LevelTwoTurnOneLength = 4;
+        public static readonly int LevelTwoTurnOneDirection = -1;
+
+        public static readonly int LevelTwoTurnTwoLength = 3;
+        public static readonly int LevelTwoTurnTwoDirection = -1;
+
+        public static readonly int LevelTwoTurnThreeLength = 3;
+        public static readonly int LevelTwoTurnThreeDirection = -1;
+        #endregion
 
         #endregion
     }
