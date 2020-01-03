@@ -242,6 +242,7 @@ namespace GDApp
             else if (gameLevel == 2)
             {
                 InitializeLevelTwoPath();
+                IntializeLevelTwoWalls();
                 InitializeCollidablePlayer();
             }
         }
@@ -977,6 +978,206 @@ namespace GDApp
             forwardFloorBlock.Transform.Translation = lastPosition;
 
             #endregion
+        }
+
+        private void IntializeLevelTwoWalls()
+        {
+            CollidablePrimitiveObject collidablePrimitiveObject = null, leftWall = null, rightWall = null, cloneItem = null; ;
+            EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["White"];
+            BoxCollisionPrimitive collisionPrimitive = null;
+            Transform3D transform = null;
+            Vector3 lastPosition = Vector3.Zero;
+            
+
+            #region SideWalls Z Axis
+            collisionPrimitive = new BoxCollisionPrimitive();
+            transform = new Transform3D(new Vector3(-7.5f, 2, 40), new Vector3(5, 2, 40));
+            collidablePrimitiveObject = new CollidablePrimitiveObject("Wall-1 ",
+            ActorType.CollidableWall,
+            transform,
+            effectParameters,
+            StatusType.Drawn | StatusType.Update,
+            this.vertexDictionary[AppData.LitCube],
+            collisionPrimitive, this.object3DManager);
+
+            this.object3DManager.Add(collidablePrimitiveObject);
+            CollidablePrimitiveObject farWall = collidablePrimitiveObject.Clone() as CollidablePrimitiveObject;
+            CollidablePrimitiveObject nearWall = collidablePrimitiveObject.Clone() as CollidablePrimitiveObject;
+
+            #region Path One
+            for (int i = 0; i < AppData.LevelTwoPathOneLength; i++)
+            {
+                cloneItem = farWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(35,0, 40 * i);
+                lastPosition = cloneItem.Transform.Translation;
+                this.object3DManager.Add(cloneItem);
+            }
+            farWall.Transform.Translation = lastPosition;
+
+            for (int i = 0; i < AppData.LevelTwoPathOneLength-1; i++)
+            {
+                cloneItem = nearWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(0, 0, 40 * i);
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+
+            }
+            nearWall.Transform.Translation = lastPosition;
+            #endregion
+
+            #region Path Two
+            for (int i = 1; i < AppData.LevelTwoPathTwoLength; i++)
+            {
+                cloneItem = farWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(((AppData.LevelTwoTurnOneLength - 1) * 40) * AppData.LevelTwoTurnOneDirection, 0, 40 * i);
+                lastPosition = cloneItem.Transform.Translation;
+                this.object3DManager.Add(cloneItem);
+            }
+            farWall.Transform.Translation = lastPosition;
+
+            for (int i = 1; i < AppData.LevelTwoPathTwoLength; i++)
+            {
+                cloneItem = nearWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(((AppData.LevelTwoTurnOneLength - 1) * 40) * AppData.LevelTwoTurnOneDirection, 0, 40 * i);
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+
+            }
+            nearWall.Transform.Translation = lastPosition;
+
+            #endregion
+
+            #region Path Three
+            for (int i = 1; i < AppData.LevelTwoPathThreeLength; i++)
+            {
+                cloneItem = farWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(((AppData.LevelTwoTurnTwoLength - 1) * 40) * AppData.LevelTwoTurnTwoDirection, 0, (40 * i) * AppData.LevelTwoPathThreeDirection);
+                lastPosition = cloneItem.Transform.Translation;
+                this.object3DManager.Add(cloneItem);
+            }
+            farWall.Transform.Translation = lastPosition;
+
+            for (int i = -1; i < AppData.LevelTwoPathThreeLength - 2; i++)
+            {
+                cloneItem = nearWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(((AppData.LevelTwoTurnTwoLength - 1) * 40) * AppData.LevelTwoTurnTwoDirection, 0, (40 * i) * AppData.LevelTwoPathThreeDirection);
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+
+            }
+            nearWall.Transform.Translation = lastPosition;
+            #endregion
+
+
+            #region Path Four
+            for (int i = 1; i < AppData.LevelTwoPathFourLength; i++)
+            {
+                cloneItem = farWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(((AppData.LevelTwoTurnThreeLength - 1) * 40) * AppData.LevelTwoTurnThreeDirection, 0, (40 * i) * AppData.LevelTwoPathFourDirection);
+                lastPosition = cloneItem.Transform.Translation;
+                this.object3DManager.Add(cloneItem);
+            }
+            farWall.Transform.Translation = lastPosition;
+
+            for (int i = 1; i < AppData.LevelTwoPathFourLength+1; i++)
+            {
+                cloneItem = nearWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3(((AppData.LevelTwoTurnThreeLength - 1) * 40) * AppData.LevelTwoTurnThreeDirection, 0, (40 * i) * AppData.LevelTwoPathFourDirection);
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+
+            }
+            nearWall.Transform.Translation = lastPosition;
+            #endregion
+
+
+            #endregion
+
+            #region SideWalls X Axis
+            collisionPrimitive = new BoxCollisionPrimitive();
+            transform = new Transform3D(new Vector3(10, 2, 22.5f), new Vector3(40, 2, 5));
+
+            leftWall = new CollidablePrimitiveObject("Wall-2 ",
+            ActorType.CollidableWall,
+            transform,
+            effectParameters,
+            StatusType.Drawn | StatusType.Update,
+            this.vertexDictionary[AppData.LitCube],
+            collisionPrimitive, this.object3DManager);
+
+            //Add To finish Start Position
+            this.object3DManager.Add(leftWall);
+
+            rightWall = leftWall.Clone() as CollidablePrimitiveObject;
+            rightWall.Transform.Translation += new Vector3(0, 0, 35);
+
+            for (int i = 0; i < AppData.LevelTwoTurnOneLength-1; i++)
+            {
+                cloneItem = rightWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3((40 * i) * AppData.LevelTwoTurnOneDirection, 0, (40 * (AppData.LevelTwoPathOneLength-1)) * AppData.LevelTwoPathOneDirection);
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+            rightWall.Transform.Translation = lastPosition;
+
+            for (int i = 1; i < AppData.LevelTwoTurnOneLength; i++)
+            {
+                cloneItem = leftWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3((40 * i) * AppData.LevelTwoTurnOneDirection, 0,(40 * (AppData.LevelTwoPathOneLength - 1)) * AppData.LevelTwoPathOneDirection);
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+            leftWall.Transform.Translation = lastPosition;
+
+
+            for (int i = 1; i < AppData.LevelTwoTurnTwoLength+1; i++)
+            {
+                cloneItem = rightWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3((40 * i) * AppData.LevelTwoTurnTwoDirection, 0, (40 * (AppData.LevelTwoPathTwoLength - 1)) * AppData.LevelTwoPathTwoDirection);
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+            rightWall.Transform.Translation = lastPosition;
+
+            for (int i = 1; i < AppData.LevelTwoTurnTwoLength-1; i++)
+            {
+                cloneItem = leftWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3((40 * i) * AppData.LevelTwoTurnTwoDirection, 0, (40 * (AppData.LevelTwoPathTwoLength - 1)) * AppData.LevelTwoPathTwoDirection);
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+            leftWall.Transform.Translation = lastPosition;
+
+            for (int i = 1; i < AppData.LevelTwoTurnThreeLength; i++)
+            {
+                cloneItem = rightWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3((40 * i) * AppData.LevelTwoTurnThreeDirection, 0, (40 * (AppData.LevelTwoPathThreeLength - 1)) * AppData.LevelTwoPathThreeDirection);
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+            rightWall.Transform.Translation = lastPosition;
+
+            for (int i = 1; i < AppData.LevelTwoTurnThreeLength; i++)
+            {
+                cloneItem = leftWall.Clone() as CollidablePrimitiveObject;
+                cloneItem.Transform.Translation += new Vector3((40 * i) * AppData.LevelTwoTurnTwoDirection, 0, (40 * (AppData.LevelTwoPathThreeLength - 1)) * AppData.LevelTwoPathThreeDirection);
+                lastPosition = cloneItem.Transform.Translation;
+
+                this.object3DManager.Add(cloneItem);
+            }
+            leftWall.Transform.Translation = lastPosition;
+            #endregion
+
         }
         #endregion
         #region Non-Collidable Primitive Objects
