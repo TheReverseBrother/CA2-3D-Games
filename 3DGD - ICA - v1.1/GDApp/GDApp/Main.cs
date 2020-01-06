@@ -242,7 +242,8 @@ namespace GDApp
             else if (gameLevel == 2)
             {
                 InitializeLevelTwoPath();
-                IntializeLevelTwoWalls();
+                InitializeLevelTwoWalls();
+                InitializeLevelTwoTrackLazers();
                 InitializeCollidablePlayer();
             }
         }
@@ -980,7 +981,7 @@ namespace GDApp
             #endregion
         }
 
-        private void IntializeLevelTwoWalls()
+        private void InitializeLevelTwoWalls()
         {
             CollidablePrimitiveObject collidablePrimitiveObject = null, leftWall = null, rightWall = null, cloneItem = null; ;
             EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
@@ -1116,6 +1117,10 @@ namespace GDApp
             rightWall = leftWall.Clone() as CollidablePrimitiveObject;
             rightWall.Transform.Translation += new Vector3(0, 0, 35);
 
+
+            cloneItem = leftWall.Clone() as CollidablePrimitiveObject;
+            this.object3DManager.Add(cloneItem);
+
             for (int i = 0; i < AppData.LevelTwoTurnOneLength-1; i++)
             {
                 cloneItem = rightWall.Clone() as CollidablePrimitiveObject;
@@ -1178,6 +1183,93 @@ namespace GDApp
             leftWall.Transform.Translation = lastPosition;
             #endregion
 
+        }
+
+        private void InitializeLevelTwoTrackLazers()
+        {
+            CollidablePrimitiveObject collidablePrimitiveObject1 = null;
+            float xPos = 0;
+            float zPos = ((AppData.LevelTwoPathOneLength * AppData.LevelTwoPathOneDirection)+0.5f) * 40;
+            Transform3D transform = null;
+            int startTime = 0, midTime = 3, endTime = 6;
+
+            #region Laser
+            for (int i = 1; i < 4; i++)
+            {
+                Vector3 start = new Vector3(xPos, 10, zPos - (10 * i));
+                Vector3 end = new Vector3(xPos + (((AppData.LevelTwoTurnOneLength -1) * AppData.LevelTwoTurnOneDirection) *40), 10, zPos - (10 * i));
+
+                transform = new Transform3D(new Vector3(xPos, 10, zPos - (5 * i)), new Vector3(2, 30, 2));
+                BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+                EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+                effectParameters.Texture = this.textureDictionary["RED"];
+                collidablePrimitiveObject1 = new CollidablePrimitiveObject("TrackLazerOne", ActorType.CollidableLazer, transform,
+                effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+
+                #region Track
+                Track3D track3D = new Track3D(CurveLoopType.Cycle);
+
+                if (i % 2 == 0)
+                {
+                    track3D.Add(end, -Vector3.UnitZ, Vector3.UnitY, startTime);
+                    track3D.Add(start, -Vector3.UnitZ, Vector3.UnitY, midTime);
+                    track3D.Add(end, -Vector3.UnitZ, Vector3.UnitY, endTime);
+                }
+                else
+                {
+                    track3D.Add(start, -Vector3.UnitZ, Vector3.UnitY, startTime);
+                    track3D.Add(end, -Vector3.UnitZ, Vector3.UnitY, midTime);
+                    track3D.Add(start, -Vector3.UnitZ, Vector3.UnitY, endTime);
+                }
+
+                Track3DController track = new Track3DController("Vertical Laser 2", ControllerType.Track, track3D, PlayStatusType.Play);
+
+                collidablePrimitiveObject1.AttachController(track);
+
+                #endregion
+
+                this.object3DManager.Add(collidablePrimitiveObject1);
+            }
+            #endregion
+
+            #region Hilt
+            for (int i = 1; i < 4; i++)
+            {
+                Vector3 start = new Vector3(xPos, 30, zPos - (10 * i));
+                Vector3 end = new Vector3(xPos + (((AppData.LevelTwoTurnOneLength - 1) * AppData.LevelTwoTurnOneDirection) * 40), 30, zPos - (10 * i));
+
+                transform = new Transform3D(new Vector3(xPos, 20, zPos - (5 * i)), new Vector3(4, 10, 4));
+                BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+                EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+                effectParameters.Texture = this.textureDictionary["Black"];
+                collidablePrimitiveObject1 = new CollidablePrimitiveObject("TrackLazerOne", ActorType.CollidableLazer, transform,
+                effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+
+                #region Track
+                Track3D track3D = new Track3D(CurveLoopType.Cycle);
+
+                if (i % 2 == 0)
+                {
+                    track3D.Add(end, -Vector3.UnitZ, Vector3.UnitY, startTime);
+                    track3D.Add(start, -Vector3.UnitZ, Vector3.UnitY, midTime);
+                    track3D.Add(end, -Vector3.UnitZ, Vector3.UnitY, endTime);
+                }
+                else
+                {
+                    track3D.Add(start, -Vector3.UnitZ, Vector3.UnitY, startTime);
+                    track3D.Add(end, -Vector3.UnitZ, Vector3.UnitY, midTime);
+                    track3D.Add(start, -Vector3.UnitZ, Vector3.UnitY, endTime);
+                }
+
+                Track3DController track = new Track3DController("Vertical Laser 2", ControllerType.Track, track3D, PlayStatusType.Play);
+
+                collidablePrimitiveObject1.AttachController(track);
+
+                #endregion
+
+                this.object3DManager.Add(collidablePrimitiveObject1);
+            }
+            #endregion
         }
         #endregion
         #region Non-Collidable Primitive Objects
