@@ -244,7 +244,8 @@ namespace GDApp
                 InitializeLevelTwoPath();
                 InitializeLevelTwoWalls();
                 //InitializeLevelTwoTrackLazers();
-                InitializeLevelTwoSineTrackLazer();
+                //InitializeLevelTwoSineTrackLazer();
+                InitializeLevelTwoPathOneLazers();
                 InitializeCollidablePlayer();
             }
         }
@@ -1456,6 +1457,102 @@ namespace GDApp
 
             #endregion
 
+        }
+
+        private void InitializeLevelTwoPathOneLazers()
+        {
+            #region Common Fields
+            CollidablePrimitiveObject laserTemplate = null, cloneItem = null;
+            EffectParameters effectParameters = null;
+            int space = 30;
+            float baseSpeed = 0.2f;
+            Vector3 verticalPos = new Vector3(10, 2, 60);
+            Vector3 horizontalPos = new Vector3(0, 5.9f, 60);
+            Vector3 lastPosition = Vector3.Zero;
+            Transform3D transform = null;
+           
+            BoxCollisionPrimitive collisionPrimitive = null;
+            #endregion
+
+            #region Lasers Path One
+          
+                for (int i = 0; i < AppData.LevelTwoPathOneLength; i++)
+                {
+                float speed = baseSpeed;
+                if(i > (AppData.LevelTwoPathOneLength/2))
+                {
+                    speed = 0.4f;
+                }
+                #region Vertical Lazers
+                collisionPrimitive = new BoxCollisionPrimitive();
+
+                    effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+                    effectParameters.Texture = this.textureDictionary["RED"];
+
+                    cloneItem = new CollidablePrimitiveObject("laser", ActorType.CollidableLazer, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+                    cloneItem.Transform = new Transform3D(verticalPos + new Vector3(0,0,space*i), new Vector3(30, 1, 1));
+
+                    
+                    cloneItem.AttachController(new TranslationSineLerpController("laser-" + i, ControllerType.SineTranslation,
+                            Vector3.UnitY, new TrigonometricParameters(15, speed, 90 * i)));
+
+                    this.object3DManager.Add(cloneItem);
+                #endregion
+
+                #region Horizontal Lazers
+                collisionPrimitive = new BoxCollisionPrimitive();
+
+                    effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+                    effectParameters.Texture = this.textureDictionary["RED"];
+
+                    cloneItem = new CollidablePrimitiveObject("laser", ActorType.CollidableLazer, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+                    cloneItem.Transform = new Transform3D(horizontalPos + new Vector3(0,0,space*i), new Vector3(1, 24, 1));
+
+                    cloneItem.AttachController(new TranslationSineLerpController("laser-" + i, ControllerType.SineTranslation,
+                        Vector3.UnitX, new TrigonometricParameters(20, speed, 90 * i)));
+
+                    this.object3DManager.Add(cloneItem);
+                #endregion
+                }
+            #region Hilt
+            for (int i = 0; i < AppData.LevelTwoPathOneLength; i++)
+            {
+                float speed = baseSpeed;
+                if (i > (AppData.LevelTwoPathOneLength / 2))
+                {
+                    speed = 0.4f;
+                }
+                #region Vertical
+                collisionPrimitive = new BoxCollisionPrimitive();
+                effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+                effectParameters.Texture = this.textureDictionary["Black"];
+
+                laserTemplate = new CollidablePrimitiveObject("laser", ActorType.CollidableLazer, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+                laserTemplate.Transform = new Transform3D(verticalPos + new Vector3(15, 0, space * i), new Vector3(5, 2, 2));
+                laserTemplate.AttachController(new TranslationSineLerpController("laser-", ControllerType.SineTranslation,
+                            Vector3.UnitY, new TrigonometricParameters(15, speed, 90 * i)));
+                this.object3DManager.Add(laserTemplate);
+                #endregion
+                
+                #region Horizontal
+                collisionPrimitive = new BoxCollisionPrimitive();
+                effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+                effectParameters.Texture = this.textureDictionary["Black"];
+
+                laserTemplate = new CollidablePrimitiveObject("laser", ActorType.CollidableLazer, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+                laserTemplate.Transform = new Transform3D(horizontalPos + new Vector3(0, 14, space * i), new Vector3(2, 5, 2));
+                laserTemplate.AttachController(new TranslationSineLerpController("laser-" + i, ControllerType.SineTranslation,
+                    Vector3.UnitX, new TrigonometricParameters(20, speed, 90 * i)));
+                this.object3DManager.Add(laserTemplate);
+                #endregion
+            }
+            #endregion   
+            
+            #endregion
         }
         #endregion
         #region Non-Collidable Primitive Objects
