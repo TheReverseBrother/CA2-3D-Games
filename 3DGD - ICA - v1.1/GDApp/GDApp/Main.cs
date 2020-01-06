@@ -243,9 +243,10 @@ namespace GDApp
             {
                 InitializeLevelTwoPath();
                 InitializeLevelTwoWalls();
-                //InitializeLevelTwoTrackLazers();
-                //InitializeLevelTwoSineTrackLazer();
+                InitializeLevelTwoTrackLazers();
+                InitializeLevelTwoSineTrackLazer();
                 InitializeLevelTwoPathOneLazers();
+                LevelTwoPickUps();
                 InitializeCollidablePlayer();
             }
         }
@@ -1553,6 +1554,198 @@ namespace GDApp
             #endregion   
             
             #endregion
+        }
+
+        private void LevelTwoPickUps()
+        {
+            CollidablePrimitiveObject pickUpObject = null;
+            Transform3D transform = null;
+            Vector3 lastPosition = Vector3.Zero;
+            Vector3 startPosition = new Vector3(10,4,0);
+            //Decide how much to implement
+            double a = AppData.pathOneLength / 2;
+            int amount = (int)Math.Round(a);
+
+
+            //Path One
+            for (int i = 1; i <= AppData.LevelTwoPathOneLength; i++)
+            {
+                //Changes position of the Items to not be in straight line
+                float offset = 10 * (float)Math.Pow(-1, i);
+
+                Vector3 position = startPosition + new Vector3(0,0, (i * 40) * AppData.LevelTwoPathOneDirection);
+                lastPosition = position;
+                Vector3 positionOffset = position + new Vector3(offset,0, 0);
+                transform = new Transform3D(positionOffset, new Vector3(1, 2, 1));
+
+                EffectParameters effectParameters = this.effectDictionary[AppData.UnlitWireframeEffectID].Clone() as EffectParameters;
+                effectParameters.DiffuseColor = Color.White;
+                effectParameters.Alpha = 1;
+
+                BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+
+                pickUpObject = new CollidablePrimitiveObject("collidable lit cube " + i, ActorType.CollidablePickup, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitTexturedDiamondVertexDataID],
+                    collisionPrimitive, this.object3DManager);
+
+                this.object3DManager.Add(pickUpObject);
+            }
+
+            startPosition = lastPosition;
+
+            for (int i = 1; i < AppData.LevelTwoTurnOneLength; i++)
+            {
+                //Changes position of the Items to not be in straight line
+                float offset = 10 * (float)Math.Pow(-1, i);
+
+                Vector3 position = startPosition + new Vector3((i * 40)* AppData.LevelTwoTurnOneDirection, 0,0);
+                lastPosition = position;
+                Vector3 positionOffset = position + new Vector3(0, 0, offset);
+                transform = new Transform3D(positionOffset, new Vector3(1, 2, 1));
+
+                EffectParameters effectParameters = this.effectDictionary[AppData.UnlitWireframeEffectID].Clone() as EffectParameters;
+                effectParameters.DiffuseColor = Color.White;
+                effectParameters.Alpha = 1;
+
+                BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+
+                pickUpObject = new CollidablePrimitiveObject("collidable lit cube " + i, ActorType.CollidablePickup, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitTexturedDiamondVertexDataID],
+                    collisionPrimitive, this.object3DManager);
+
+                this.object3DManager.Add(pickUpObject);
+            }
+
+            startPosition = lastPosition;
+
+            for (int i = 1; i <= AppData.LevelTwoPathTwoLength-1; i++)
+            {
+                Console.WriteLine("Start Position " + startPosition);
+
+                //Changes position of the Items to not be in straight line
+                float offset = 10 * (float)Math.Pow(-1, i);
+
+                Vector3 position = startPosition + new Vector3(0, 0, (i * 40) * AppData.LevelTwoPathTwoDirection);
+                lastPosition = position;
+                Vector3 positionOffset = position + new Vector3(offset, 0, 0);
+                transform = new Transform3D(positionOffset, new Vector3(1, 2, 1));
+
+                EffectParameters effectParameters = this.effectDictionary[AppData.UnlitWireframeEffectID].Clone() as EffectParameters;
+                effectParameters.DiffuseColor = Color.White;
+                effectParameters.Alpha = 1;
+
+                BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+
+                pickUpObject = new CollidablePrimitiveObject("collidable lit cube " + i, ActorType.CollidablePickup, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitTexturedDiamondVertexDataID],
+                    collisionPrimitive, this.object3DManager);
+
+                this.object3DManager.Add(pickUpObject);
+            }
+
+            startPosition = lastPosition;
+
+            for (int i = 1; i < AppData.LevelTwoTurnTwoLength; i++)
+            {
+                //Changes position of the Items to not be in straight line
+                float offset = 10 * (float)Math.Pow(-1, i);
+
+                Vector3 position = startPosition + new Vector3((i * 40) * AppData.LevelTwoTurnTwoDirection, 0, 0);
+                lastPosition = position;
+                Vector3 positionOffset = position + new Vector3(0, 0, offset);
+                transform = new Transform3D(positionOffset, new Vector3(1, 2, 1));
+
+                EffectParameters effectParameters = this.effectDictionary[AppData.UnlitWireframeEffectID].Clone() as EffectParameters;
+                effectParameters.DiffuseColor = Color.White;
+                effectParameters.Alpha = 1;
+
+                BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+
+                pickUpObject = new CollidablePrimitiveObject("collidable lit cube " + i, ActorType.CollidablePickup, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitTexturedDiamondVertexDataID],
+                    collisionPrimitive, this.object3DManager);
+
+                this.object3DManager.Add(pickUpObject);
+            }
+
+            startPosition = lastPosition;
+
+            for (int i = 1; i <= AppData.LevelTwoPathThreeLength - 1; i++)
+            {
+                Console.WriteLine("Start Position " + startPosition);
+
+                //Changes position of the Items to not be in straight line
+                float offset = 10 * (float)Math.Pow(-1, i);
+
+                Vector3 position = startPosition + new Vector3(0, 0, (i * 40) * AppData.LevelTwoPathThreeDirection);
+                lastPosition = position;
+                Vector3 positionOffset = position + new Vector3(offset, 0, 0);
+                transform = new Transform3D(positionOffset, new Vector3(1, 2, 1));
+
+                EffectParameters effectParameters = this.effectDictionary[AppData.UnlitWireframeEffectID].Clone() as EffectParameters;
+                effectParameters.DiffuseColor = Color.White;
+                effectParameters.Alpha = 1;
+
+                BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+
+                pickUpObject = new CollidablePrimitiveObject("collidable lit cube " + i, ActorType.CollidablePickup, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitTexturedDiamondVertexDataID],
+                    collisionPrimitive, this.object3DManager);
+
+                this.object3DManager.Add(pickUpObject);
+            }
+
+            startPosition = lastPosition;
+
+            for (int i = 1; i < AppData.LevelTwoTurnThreeLength; i++)
+            {
+                //Changes position of the Items to not be in straight line
+                float offset = 10 * (float)Math.Pow(-1, i);
+
+                Vector3 position = startPosition + new Vector3((i * 40) * AppData.LevelTwoTurnThreeDirection, 0, 0);
+                lastPosition = position;
+                Vector3 positionOffset = position + new Vector3(0, 0, offset);
+                transform = new Transform3D(positionOffset, new Vector3(1, 2, 1));
+
+                EffectParameters effectParameters = this.effectDictionary[AppData.UnlitWireframeEffectID].Clone() as EffectParameters;
+                effectParameters.DiffuseColor = Color.White;
+                effectParameters.Alpha = 1;
+
+                BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+
+                pickUpObject = new CollidablePrimitiveObject("collidable lit cube " + i, ActorType.CollidablePickup, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitTexturedDiamondVertexDataID],
+                    collisionPrimitive, this.object3DManager);
+
+                this.object3DManager.Add(pickUpObject);
+            }
+
+            startPosition = lastPosition;
+
+            for (int i = 1; i <= AppData.LevelTwoPathFourLength - 1; i++)
+            {
+                Console.WriteLine("Start Position " + startPosition);
+
+                //Changes position of the Items to not be in straight line
+                float offset = 10 * (float)Math.Pow(-1, i);
+
+                Vector3 position = startPosition + new Vector3(0, 0, (i * 40) * AppData.LevelTwoPathFourDirection);
+                lastPosition = position;
+                Vector3 positionOffset = position + new Vector3(offset, 0, 0);
+                transform = new Transform3D(positionOffset, new Vector3(1, 2, 1));
+
+                EffectParameters effectParameters = this.effectDictionary[AppData.UnlitWireframeEffectID].Clone() as EffectParameters;
+                effectParameters.DiffuseColor = Color.White;
+                effectParameters.Alpha = 1;
+
+                BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+
+                pickUpObject = new CollidablePrimitiveObject("collidable lit cube " + i, ActorType.CollidablePickup, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitTexturedDiamondVertexDataID],
+                    collisionPrimitive, this.object3DManager);
+
+                this.object3DManager.Add(pickUpObject);
+            }
         }
         #endregion
         #region Non-Collidable Primitive Objects
