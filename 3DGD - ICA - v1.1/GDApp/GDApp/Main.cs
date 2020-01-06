@@ -243,7 +243,8 @@ namespace GDApp
             {
                 InitializeLevelTwoPath();
                 InitializeLevelTwoWalls();
-                InitializeLevelTwoTrackLazers();
+                //InitializeLevelTwoTrackLazers();
+                InitializeLevelTwoSineTrackLazer();
                 InitializeCollidablePlayer();
             }
         }
@@ -1270,6 +1271,191 @@ namespace GDApp
                 this.object3DManager.Add(collidablePrimitiveObject1);
             }
             #endregion
+        }
+
+        private void InitializeLevelTwoSineTrackLazer()
+        {
+            #region Common Attributes
+            float zPos =  (((AppData.LevelTwoPathOneLength -1)* AppData.LevelTwoPathOneDirection)
+               +(AppData.LevelTwoPathTwoLength * AppData.LevelTwoPathTwoDirection))* 40;
+
+            float xPos = ((AppData.LevelTwoTurnOneLength-1) * AppData.LevelTwoTurnOneDirection) * 40;
+            CollidablePrimitiveObject collidablePrimitiveObject = null, hilt = null;
+            Vector3 startPosition = new Vector3(xPos, 10, zPos - 10);
+
+            Transform3D transform = new Transform3D(startPosition, new Vector3(1, 30, 1));
+            BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+            EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["RED"];
+            Vector3 endPosition = new Vector3(xPos + (((AppData.LevelTwoTurnTwoLength-1) * AppData.LevelTwoTurnTwoDirection) * 40), 10, zPos + 10);
+
+            float distance = Vector3.Distance(startPosition, endPosition);
+            float thirdOfDistance = distance / 3;
+            Vector3 firstCurve = startPosition + new Vector3(thirdOfDistance * AppData.LevelTwoTurnTwoDirection, 0, 20);
+            Vector3 secondCurve = endPosition - new Vector3(thirdOfDistance * AppData.LevelTwoTurnTwoDirection, 0, 20);
+            #endregion
+
+            #region Lazer 1
+            collidablePrimitiveObject = new CollidablePrimitiveObject("TrackLazerOne", ActorType.CollidableLazer, transform,
+                effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+
+            #region Track
+            Track3D track3D = new Track3D(CurveLoopType.Cycle);
+
+
+            track3D.Add(startPosition, -Vector3.UnitZ, Vector3.UnitY, 0);
+
+            track3D.Add(firstCurve, -Vector3.UnitZ, Vector3.UnitY, 1);
+
+            track3D.Add(secondCurve, -Vector3.UnitZ, Vector3.UnitY, 2);
+
+            track3D.Add(endPosition, -Vector3.UnitZ, Vector3.UnitY, 3);
+
+            track3D.Add(secondCurve, -Vector3.UnitZ, Vector3.UnitY, 4);
+
+            track3D.Add(firstCurve, -Vector3.UnitZ, Vector3.UnitY, 5);
+
+            track3D.Add(startPosition, -Vector3.UnitZ, Vector3.UnitY, 6);
+
+
+            Track3DController track = new Track3DController("Vertical Laser", ControllerType.Track, track3D, PlayStatusType.Play);
+
+            collidablePrimitiveObject.AttachController(track);
+            #endregion
+
+            this.object3DManager.Add(collidablePrimitiveObject);
+
+            #region Hilt
+            Vector3 adjustment = new Vector3(0, 15, 0);
+            Vector3 hiltStart = startPosition + adjustment;
+            Transform3D transform3D = new Transform3D(hiltStart, new Vector3(2, 5, 2));
+            EffectParameters effectParameters2 = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters2.Texture = this.textureDictionary["Black"];
+            collisionPrimitive = new BoxCollisionPrimitive();
+            hilt = new CollidablePrimitiveObject("Hilt", ActorType.CollidableArchitecture, transform3D, effectParameters2,
+                StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+            #region Track
+
+            Vector3 hiltEnd = endPosition + adjustment;
+            Vector3 hiltCurveOne = firstCurve + adjustment;
+            Vector3 hiltCurveTwo = secondCurve + adjustment;
+
+
+            Track3D trackPositions = new Track3D(CurveLoopType.Cycle);
+
+
+            trackPositions.Add(hiltStart, -Vector3.UnitZ, Vector3.UnitY, 0);
+
+            trackPositions.Add(hiltCurveOne, -Vector3.UnitZ, Vector3.UnitY, 1);
+
+            trackPositions.Add(hiltCurveTwo, -Vector3.UnitZ, Vector3.UnitY, 2);
+
+            trackPositions.Add(hiltEnd, -Vector3.UnitZ, Vector3.UnitY, 3);
+
+            trackPositions.Add(hiltCurveTwo, -Vector3.UnitZ, Vector3.UnitY, 4);
+
+            trackPositions.Add(hiltCurveOne, -Vector3.UnitZ, Vector3.UnitY, 5);
+
+            trackPositions.Add(hiltStart, -Vector3.UnitZ, Vector3.UnitY, 6);
+
+
+
+            Track3DController trackController = new Track3DController("Vertical Laser", ControllerType.Track, trackPositions, PlayStatusType.Play);
+
+            hilt.AttachController(trackController);
+            this.object3DManager.Add(hilt);
+            #endregion
+            #endregion
+            #endregion
+
+
+            #region Lazer 2
+            Vector3 changePos = new Vector3(0, 0, 20);
+            transform = new Transform3D(startPosition + changePos, new Vector3(1, 30, 1));
+            collidablePrimitiveObject = new CollidablePrimitiveObject("TrackLazerOne", ActorType.CollidableLazer, transform,
+               effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+
+
+            #region Track
+            startPosition += changePos;
+            endPosition -= changePos;
+
+            firstCurve = startPosition + new Vector3(thirdOfDistance * AppData.LevelTwoTurnTwoDirection, 0, -20);
+            secondCurve = endPosition + new Vector3(thirdOfDistance, 0, 20);
+            
+            track3D = new Track3D(CurveLoopType.Cycle);
+
+
+            track3D.Add(startPosition, -Vector3.UnitZ, Vector3.UnitY, 0);
+
+            track3D.Add(firstCurve, -Vector3.UnitZ, Vector3.UnitY, 1);
+
+            track3D.Add(secondCurve, -Vector3.UnitZ, Vector3.UnitY, 2);
+
+            track3D.Add(endPosition, -Vector3.UnitZ, Vector3.UnitY, 3);
+
+            track3D.Add(secondCurve, -Vector3.UnitZ, Vector3.UnitY, 4);
+
+            track3D.Add(firstCurve, -Vector3.UnitZ, Vector3.UnitY, 5);
+
+            track3D.Add(startPosition, -Vector3.UnitZ, Vector3.UnitY, 6);
+
+
+            track = new Track3DController("Vertical Laser", ControllerType.Track, track3D, PlayStatusType.Play);
+
+            collidablePrimitiveObject.AttachController(track);
+
+            #endregion
+            this.object3DManager.Add(collidablePrimitiveObject);
+
+
+            #region Hilt
+            
+            hiltStart = startPosition + adjustment;
+            transform3D = new Transform3D(hiltStart, new Vector3(2, 5, 2));
+            effectParameters2 = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters2.Texture = this.textureDictionary["Black"];
+            collisionPrimitive = new BoxCollisionPrimitive();
+            hilt = new CollidablePrimitiveObject("Hilt", ActorType.CollidableArchitecture, transform3D, effectParameters2,
+                StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+
+
+            #region Track
+
+            hiltEnd = endPosition + adjustment;
+            hiltCurveOne = firstCurve + adjustment;
+            hiltCurveTwo = secondCurve + adjustment;
+
+
+            trackPositions = new Track3D(CurveLoopType.Cycle);
+
+
+            trackPositions.Add(hiltStart, -Vector3.UnitZ, Vector3.UnitY, 0);
+
+            trackPositions.Add(hiltCurveOne, -Vector3.UnitZ, Vector3.UnitY, 1);
+
+            trackPositions.Add(hiltCurveTwo, -Vector3.UnitZ, Vector3.UnitY, 2);
+
+            trackPositions.Add(hiltEnd, -Vector3.UnitZ, Vector3.UnitY, 3);
+
+            trackPositions.Add(hiltCurveTwo, -Vector3.UnitZ, Vector3.UnitY, 4);
+
+            trackPositions.Add(hiltCurveOne, -Vector3.UnitZ, Vector3.UnitY, 5);
+
+            trackPositions.Add(hiltStart, -Vector3.UnitZ, Vector3.UnitY, 6);
+
+
+
+            trackController = new Track3DController("Vertical Laser", ControllerType.Track, trackPositions, PlayStatusType.Play);
+
+            hilt.AttachController(trackController);
+            this.object3DManager.Add(hilt);
+            #endregion
+
+            #endregion
+
+            #endregion
+
         }
         #endregion
         #region Non-Collidable Primitive Objects
