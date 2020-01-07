@@ -38,6 +38,7 @@ namespace GDLibrary
         LevelOneFinish,
         CollidableButton,
         CollidableRemovableWall,
+        LevelTwoFinish,
     }
 }
 

@@ -243,12 +243,13 @@ namespace GDApp
             {
                 InitializeLevelTwoPath();
                 InitializeLevelTwoWalls();
-                //InitializeLevelTwoTrackLazers();
-                //InitializeLevelTwoSineTrackLazer();
-                //InitializeLevelTwoPathOneLazers();
+                InitializeLevelTwoTrackLazers();
+                InitializeLevelTwoSineTrackLazer();
+                InitializeLevelTwoPathOneLazers();
                 LevelTwoPickUps();
-                //LevelTwoEndLazers();
+                LevelTwoEndLazers();
                 LevelTwoButtonAndBlockade();
+                LevelTwoEndHouse();
                 InitializeCollidablePlayer();
             }
         }
@@ -1937,6 +1938,47 @@ namespace GDApp
             this.object3DManager);
 
             this.object3DManager.Add(collidablePrimitiveObject);
+        }
+
+        private void LevelTwoEndHouse()
+        {
+            float xPos = (((AppData.LevelTwoTurnOneLength * AppData.LevelTwoTurnOneDirection) + (AppData.LevelTwoTurnTwoLength * AppData.LevelTwoTurnTwoDirection)
+                + (AppData.LevelTwoTurnThreeLength * AppData.LevelTwoTurnThreeDirection))) * 40;
+
+            float zPos = (((AppData.LevelTwoPathOneLength * AppData.LevelTwoPathOneDirection) + (AppData.LevelTwoPathTwoLength * AppData.LevelTwoPathTwoDirection)
+                + (AppData.LevelTwoPathThreeLength * AppData.LevelTwoPathThreeDirection) + (AppData.LevelTwoPathFourLength * AppData.LevelTwoPathFourDirection))) * 40;
+
+
+            CollidablePrimitiveObject houseBase = null, roof = null;
+            EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["brick"];
+            Transform3D transform = new Transform3D(new Vector3(xPos + (40 * 3)+10, 10, zPos), new Vector3(30, 20, 30));
+            BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+
+
+            houseBase = new CollidablePrimitiveObject("base",
+                    ActorType.LevelTwoFinish,
+                    transform,
+                    effectParameters,
+                    StatusType.Drawn | StatusType.Update,
+                    this.vertexDictionary[AppData.LitCube],
+                    collisionPrimitive, this.object3DManager);
+
+            this.object3DManager.Add(houseBase);
+            EffectParameters ef = this.effectDictionary[AppData.UnlitTexturedEffectID].Clone() as EffectParameters;
+            ef.Texture = this.textureDictionary["roof"];
+            transform = new Transform3D(new Vector3(xPos+(40 * 3)+10, 20, zPos), new Vector3(30, 20, 30));
+
+            collisionPrimitive = new BoxCollisionPrimitive();
+            roof = new CollidablePrimitiveObject("roof",
+                    ActorType.CollidableGround,
+                    transform,
+                    ef,
+                    StatusType.Drawn | StatusType.Update,
+                    this.vertexDictionary["Pyramid"],
+                    collisionPrimitive, this.object3DManager);
+            this.object3DManager.Add(roof);
+
         }
         #endregion
         #region Non-Collidable Primitive Objects
