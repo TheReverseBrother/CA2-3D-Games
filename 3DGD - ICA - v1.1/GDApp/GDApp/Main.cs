@@ -1913,7 +1913,7 @@ namespace GDApp
             effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
             effectParameters.Texture = this.textureDictionary["RED"];
             transform = new Transform3D(new Vector3(xPos+ (6 * 40) + 20, 6, zPos + (4 * 40)), new Vector3(5, 5, 5));
-            collidablePrimitiveObject = new CollidablePrimitiveObject("Button Base",
+            collidablePrimitiveObject = new CollidablePrimitiveObject("Button",
                 ActorType.CollidableButton,
                 transform,
                 effectParameters,
@@ -1928,7 +1928,7 @@ namespace GDApp
             effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
             effectParameters.Texture = this.textureDictionary["White"];
             transform = new Transform3D(new Vector3(xPos+(40*3) + 10, 5, zPos+(40 *3)), new Vector3(35, 10, 5));
-            collidablePrimitiveObject = new CollidablePrimitiveObject("Button Base",
+            collidablePrimitiveObject = new CollidablePrimitiveObject("REMOVABLE WALL",
                 ActorType.CollidableRemovableWall,
                 transform,
                 effectParameters,
