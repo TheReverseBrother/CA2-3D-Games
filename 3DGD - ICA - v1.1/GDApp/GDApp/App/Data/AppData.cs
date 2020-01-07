@@ -199,7 +199,7 @@ namespace GDLibrary
         public static readonly int LevelTwoTurnTwoLength = 3;
         public static readonly int LevelTwoTurnTwoDirection = -1;
 
-        public static readonly int LevelTwoTurnThreeLength = 3;
+        public static readonly int LevelTwoTurnThreeLength = 4;
         public static readonly int LevelTwoTurnThreeDirection = -1;
         #endregion
 

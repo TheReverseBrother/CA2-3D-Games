@@ -242,11 +242,12 @@ namespace GDApp
             else if (gameLevel == 2)
             {
                 InitializeLevelTwoPath();
-                InitializeLevelTwoWalls();
+                //InitializeLevelTwoWalls();
                 InitializeLevelTwoTrackLazers();
                 InitializeLevelTwoSineTrackLazer();
                 InitializeLevelTwoPathOneLazers();
                 LevelTwoPickUps();
+                LevelTwoEndLazers();
                 InitializeCollidablePlayer();
             }
         }
@@ -1374,6 +1375,8 @@ namespace GDApp
             #region Lazer 2
             Vector3 changePos = new Vector3(0, 0, 20);
             transform = new Transform3D(startPosition + changePos, new Vector3(1, 30, 1));
+            collisionPrimitive = new BoxCollisionPrimitive();
+
             collidablePrimitiveObject = new CollidablePrimitiveObject("TrackLazerOne", ActorType.CollidableLazer, transform,
                effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
 
@@ -1746,6 +1749,89 @@ namespace GDApp
 
                 this.object3DManager.Add(pickUpObject);
             }
+        }
+
+        private void LevelTwoEndLazers()
+        {
+            #region Common Fields
+            CollidablePrimitiveObject laserTemplate = null, cloneItem = null;
+            EffectParameters effectParameters = null;
+
+            Vector3 lastPosition = Vector3.Zero;
+            Transform3D transform = null;
+            BoxCollisionPrimitive collisionPrimitive = null;
+            float speed = 0.5f;
+            #endregion
+
+            float xPos = (((AppData.LevelTwoTurnOneLength * AppData.LevelTwoTurnOneDirection) +
+                (AppData.LevelTwoTurnTwoLength * AppData.LevelTwoTurnTwoDirection)) +2)* 40;
+
+            float zPos = ((AppData.LevelTwoPathOneLength * AppData.LevelTwoPathOneDirection) + (AppData.LevelTwoPathTwoLength * AppData.LevelTwoPathTwoDirection)
+                + (AppData.LevelTwoPathThreeLength * AppData.LevelTwoPathThreeDirection)) * 40;
+            int direction = AppData.LevelTwoTurnThreeDirection;
+            for (int i = 1; i < 3; i++)
+            {
+                #region Vertical Lazer
+                collisionPrimitive = new BoxCollisionPrimitive();
+
+                effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+                effectParameters.Texture = this.textureDictionary["RED"];
+
+                cloneItem = new CollidablePrimitiveObject("laser", ActorType.CollidableLazer, transform,
+                effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+                cloneItem.Transform = new Transform3D(new Vector3(xPos + (40 *(i * direction)), 2, zPos), new Vector3(1, 1, 30));
+
+                cloneItem.AttachController(new TranslationSineLerpController("laser-" + i, ControllerType.SineTranslation,
+                        Vector3.UnitY, new TrigonometricParameters(20, speed, 90 * i)));
+
+                this.object3DManager.Add(cloneItem);
+                #endregion
+                #region Horizontal Lazers
+                collisionPrimitive = new BoxCollisionPrimitive();
+
+                effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+                effectParameters.Texture = this.textureDictionary["RED"];
+
+                cloneItem = new CollidablePrimitiveObject("laser", ActorType.CollidableLazer, transform,
+                effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+                cloneItem.Transform = new Transform3D(new Vector3(xPos + (40 * (i * direction)), 10, zPos-10), new Vector3(1, 24, 1));
+
+                cloneItem.AttachController(new TranslationSineLerpController("laser-" + i, ControllerType.SineTranslation,
+                    Vector3.UnitZ, new TrigonometricParameters(20, speed, 90 * i)));
+
+                this.object3DManager.Add(cloneItem);
+                #endregion
+            }
+
+            for (int i = 1; i < 3; i++)
+            {
+                #region Vertical
+                collisionPrimitive = new BoxCollisionPrimitive();
+                effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+                effectParameters.Texture = this.textureDictionary["Black"];
+
+                laserTemplate = new CollidablePrimitiveObject("laser", ActorType.CollidableLazer, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+                laserTemplate.Transform = new Transform3D(new Vector3(xPos + (40 * (i * direction)), 2.2f, zPos-15), new Vector3(2, 2, 5));
+                laserTemplate.AttachController(new TranslationSineLerpController("laser-", ControllerType.SineTranslation,
+                            Vector3.UnitY, new TrigonometricParameters(20, speed, 90 * i)));
+                this.object3DManager.Add(laserTemplate);
+                #endregion
+
+                #region Horizontal
+                collisionPrimitive = new BoxCollisionPrimitive();
+                effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+                effectParameters.Texture = this.textureDictionary["Black"];
+
+                laserTemplate = new CollidablePrimitiveObject("laser", ActorType.CollidableLazer, transform,
+                    effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
+                laserTemplate.Transform = new Transform3D(new Vector3(xPos + (40 * (i * direction)), 22, zPos-10), new Vector3(2, 5, 2));
+                laserTemplate.AttachController(new TranslationSineLerpController("laser-" + i, ControllerType.SineTranslation,
+                    Vector3.UnitZ, new TrigonometricParameters(20, speed, 90 * i)));
+                this.object3DManager.Add(laserTemplate);
+                #endregion
+            }
+
         }
         #endregion
         #region Non-Collidable Primitive Objects
