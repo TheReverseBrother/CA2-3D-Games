@@ -248,6 +248,7 @@ namespace GDApp
                 //InitializeLevelTwoPathOneLazers();
                 LevelTwoPickUps();
                 //LevelTwoEndLazers();
+                LevelTwoButtonAndBlockade();
                 InitializeCollidablePlayer();
             }
         }
@@ -1876,6 +1877,66 @@ namespace GDApp
                 #endregion
             }
 
+        }
+
+        private void LevelTwoButtonAndBlockade()
+        {
+            CollidablePrimitiveObject collidablePrimitiveObject = null, cloneItem = null;
+            Transform3D transform = null;
+            Vector3 scale = new Vector3(2,10,10);
+            BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
+            EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["Black"];
+
+            float xPos = (((AppData.LevelTwoTurnOneLength * AppData.LevelTwoTurnOneDirection) + (AppData.LevelTwoTurnTwoLength * AppData.LevelTwoTurnTwoDirection)
+                + (AppData.LevelTwoTurnThreeLength * AppData.LevelTwoTurnThreeDirection))) * 40;
+
+            float zPos = (((AppData.LevelTwoPathOneLength * AppData.LevelTwoPathOneDirection) + (AppData.LevelTwoPathTwoLength * AppData.LevelTwoPathTwoDirection)
+                + (AppData.LevelTwoPathThreeLength * AppData.LevelTwoPathThreeDirection) + (AppData.LevelTwoPathFourLength * AppData.LevelTwoPathFourDirection))) * 40;
+
+
+
+            transform = new Transform3D(new Vector3(xPos + (6 * 40) + 23, 6, zPos + (4 * 40)), new Vector3(2, 10, 10));
+            collidablePrimitiveObject = new CollidablePrimitiveObject("Button Base",
+                ActorType.CollidableGround,
+                transform ,
+                effectParameters,
+            StatusType.Drawn | StatusType.Update,
+            this.vertexDictionary[AppData.LitCube],
+            collisionPrimitive,
+            this.object3DManager);
+
+            this.object3DManager.Add(collidablePrimitiveObject);
+
+            collisionPrimitive = new BoxCollisionPrimitive();
+            effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["RED"];
+            transform = new Transform3D(new Vector3(xPos+ (6 * 40) + 20, 6, zPos + (4 * 40)), new Vector3(5, 5, 5));
+            collidablePrimitiveObject = new CollidablePrimitiveObject("Button Base",
+                ActorType.CollidableButton,
+                transform,
+                effectParameters,
+            StatusType.Drawn | StatusType.Update,
+            this.vertexDictionary[AppData.LitCube],
+            collisionPrimitive,
+            this.object3DManager);
+
+            this.object3DManager.Add(collidablePrimitiveObject);
+
+            collisionPrimitive = new BoxCollisionPrimitive();
+            effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["White"];
+            transform = new Transform3D(new Vector3(xPos+(40*3) + 10, 5, zPos+(40 *3)), new Vector3(35, 10, 5));
+            collidablePrimitiveObject = new CollidablePrimitiveObject("Button Base",
+                ActorType.CollidableRemovableWall,
+                transform,
+                effectParameters,
+            StatusType.Drawn | StatusType.Update,
+            this.vertexDictionary[AppData.LitCube],
+            collisionPrimitive,
+            this.object3DManager);
+
+            this.object3DManager.Add(collidablePrimitiveObject);
         }
         #endregion
         #region Non-Collidable Primitive Objects

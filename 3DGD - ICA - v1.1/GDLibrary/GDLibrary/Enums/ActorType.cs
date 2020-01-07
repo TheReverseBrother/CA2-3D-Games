@@ -36,6 +36,8 @@ namespace GDLibrary
         UIText,
         UITexture,
         LevelOneFinish,
+        CollidableButton,
+        CollidableRemovableWall,
     }
 }
 
