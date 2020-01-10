@@ -7,6 +7,7 @@ Bugs:			None
 Fixes:			None
 */
 using Microsoft.Xna.Framework;
+using System;
 
 namespace GDLibrary
 {
@@ -15,6 +16,8 @@ namespace GDLibrary
         #region Fields
         private bool bDirty = false;
         int score;
+        int level;
+        int levelOneScore;
         private UITextObject parent;
         #endregion
 
@@ -26,6 +29,8 @@ namespace GDLibrary
         {
             score = 0;
             this.parent = parent;
+            this.levelOneScore = 0;
+            this.level = 1;
             //register with the event dispatcher for the events of interest
             RegisterForEventHandling(eventDispatcher);
         }
@@ -35,6 +40,7 @@ namespace GDLibrary
         {
             eventDispatcher.RemoveActorChanged += EventDispatcher_PlayerChanged;
             eventDispatcher.restartGane += EventDispatcher_Restart;
+            eventDispatcher.changeLevel += EventDispatcher_Level;
         }
 
         protected virtual void EventDispatcher_PlayerChanged(EventData eventData)
@@ -43,12 +49,36 @@ namespace GDLibrary
             parent.Text = "Score : " + score;
             bDirty = true;
         }
+        protected virtual void EventDispatcher_Level(EventData eventData)
+        {
+            int levelSent = (int)eventData.AdditionalParameters[0];
+            Console.WriteLine("Changing Level Progress" + levelSent);
 
+            if (levelSent == 2)
+            {
+                int temp = this.score;
+                this.levelOneScore = temp;
+                this.level = levelSent;
+            }
+            else
+            {
+                levelOneScore = 0;
+            }
+        }
         protected virtual void EventDispatcher_Restart(EventData eventData)
         {
-            this.score = 0;
-            parent.Text = "Score : " + score;
-            bDirty = true;
+            if(level == 1)
+            {
+                this.score = 0;
+                parent.Text = "Score : " + score;
+                bDirty = true;
+            }
+            if(level == 2)
+            {
+                this.score = levelOneScore;
+                parent.Text = "Score : " + score;
+                bDirty = true;
+            }
         }
         #endregion
 

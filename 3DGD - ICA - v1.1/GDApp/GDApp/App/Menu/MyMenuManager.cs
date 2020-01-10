@@ -102,7 +102,10 @@ namespace GDApp
                     case "restartbtn":
                     DoRestart();
                     break;
-                    case "controlsbtn":
+                case "advance":
+                    DoRestart();
+                    break;
+                case "controlsbtn":
                     SetActiveList(AppData.MenuControlsID); //use sceneIDs specified when we created the menu scenes in Main::AddMenuElements()
                     break;
 

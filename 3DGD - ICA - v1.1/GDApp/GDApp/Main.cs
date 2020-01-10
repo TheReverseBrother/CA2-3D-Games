@@ -34,7 +34,7 @@ namespace GDApp
         private SoundManager soundManager;
         private MyMenuManager menuManager;
         private int worldScale = 1250;
-        private int gameLevel = 2;
+        public int gameLevel = 1;
         private CameraLayoutType cameraLayoutType;
         private ScreenLayoutType screenLayoutType;
         private UIManager uiManager;
@@ -1617,7 +1617,7 @@ namespace GDApp
 
 
             //Path One
-            for (int i = 1; i <= AppData.LevelTwoPathOneLength; i++)
+            for (int i = 2; i <= AppData.LevelTwoPathOneLength; i++)
             {
                 //Changes position of the Items to not be in straight line
                 float offset = 10 * (float)Math.Pow(-1, i);
@@ -2268,9 +2268,7 @@ namespace GDApp
 
         private void ChangeLevel(EventData eventData)
         {
-            Console.WriteLine(eventData.AdditionalParameters[0] as string);
             int level = (int)eventData.AdditionalParameters[0];
-            Console.WriteLine("Changing Level");
             this.gameLevel = level;
         }
 
