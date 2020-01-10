@@ -3405,7 +3405,7 @@ namespace GDApp
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Purple);
+            GraphicsDevice.Clear(Color.DarkSlateBlue);
             base.Draw(gameTime);
         }
         #endregion
