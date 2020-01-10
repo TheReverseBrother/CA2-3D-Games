@@ -113,8 +113,6 @@ namespace GDApp
                         break;
                 }
 
-            //add event to play mouse click
-            DoMenuClickSound();   
         }
 
         private void DoMenuClickSound()

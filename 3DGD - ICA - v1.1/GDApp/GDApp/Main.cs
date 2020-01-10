@@ -226,7 +226,10 @@ namespace GDApp
         {
             //remove anything from the last time LoadGame() may have been called
             this.object3DManager.Clear();
-      
+            object[] additionalParameters = { "background-track" };
+
+            EventDispatcher.Publish(new EventData(EventActionType.OnPlay, EventCategoryType.Sound2D, additionalParameters));
+
             if (gameLevel == 1)
             {     
                 InitializeLevelOneSineTrackLaser();
@@ -3406,6 +3409,7 @@ namespace GDApp
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.DarkSlateBlue);
+
             base.Draw(gameTime);
         }
         #endregion

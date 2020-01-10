@@ -79,12 +79,15 @@ namespace GDLibrary
             switch(eventData.EventType)
             {
                 case EventActionType.GameOver:
+                    EventDispatcher.Publish(new EventData(EventActionType.OnPlay, EventCategoryType.Sound2D, new object[] { "defeat" }));
                     SetActiveList("Game Over");
                     break;
                 case EventActionType.LevelOneComplete:
+                    EventDispatcher.Publish(new EventData(EventActionType.OnPlay, EventCategoryType.Sound2D, new object[] { "win" }));
                     SetActiveList("beatLevel");
                     break;
                 case EventActionType.GameComplete:
+                    EventDispatcher.Publish(new EventData(EventActionType.OnPlay, EventCategoryType.Sound2D, new object[] { "win" }));
                     SetActiveList("win");
                     break;
             }

@@ -225,8 +225,8 @@ Wave Bank
     Windows Bank Path Edited = 0;
     Seek Tables = 1;
     Compression Preset Name = <none>;
-    Bank Last Revised Low = 1439872788;
-    Bank Last Revised High = 30430317;
+    Bank Last Revised Low = 3985187999;
+    Bank Last Revised High = 30787535;
 
     Wave
     {
@@ -248,6 +248,98 @@ Wave Bank
             File Type = 1;
             Last Modified Low = 3805660051;
             Last Modified High = 30430316;
+        }
+    }
+
+    Wave
+    {
+        Name = background-track;
+        File = background-track.wav;
+        Build Settings Last Modified Low = 359331942;
+        Build Settings Last Modified High = 30787524;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 2;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 62622720;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 235653098;
+            Last Modified High = 30787524;
+        }
+    }
+
+    Wave
+    {
+        Name = pickup-sound;
+        File = pickup-sound.wav;
+        Build Settings Last Modified Low = 2729680671;
+        Build Settings Last Modified High = 30787529;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 54946;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 5943107;
+            Last Modified High = 30787528;
+        }
+    }
+
+    Wave
+    {
+        Name = defeat;
+        File = defeat.wav;
+        Build Settings Last Modified Low = 2088635434;
+        Build Settings Last Modified High = 30787535;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 2;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 1001584;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 1979943817;
+            Last Modified High = 30787535;
+        }
+    }
+
+    Wave
+    {
+        Name = win;
+        File = win.wav;
+        Build Settings Last Modified Low = 3949271055;
+        Build Settings Last Modified High = 30787535;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 2;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 46;
+            Play Region Length = 352800;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 3710339995;
+            Last Modified High = 30787535;
         }
     }
 }
@@ -307,6 +399,194 @@ Sound Bank
         }
     }
 
+    Sound
+    {
+        Name = background-track;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = WaveBank1;
+                    Bank Index = 0;
+                    Entry Name = background-track;
+                    Entry Index = 1;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = pickup-sound;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = WaveBank1;
+                    Bank Index = 0;
+                    Entry Name = pickup-sound;
+                    Entry Index = 2;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = defeat;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = WaveBank1;
+                    Bank Index = 0;
+                    Entry Name = defeat;
+                    Entry Index = 3;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = win;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = WaveBank1;
+                    Bank Index = 0;
+                    Entry Name = win;
+                    Entry Index = 4;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
     Cue
     {
         Name = boing;
@@ -322,6 +602,86 @@ Sound Bank
         {
             Name = boing;
             Index = 0;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = background-track;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = background-track;
+            Index = 1;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = pickup-sound;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = pickup-sound;
+            Index = 2;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = defeat;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = defeat;
+            Index = 3;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = win;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = win;
+            Index = 4;
             Weight Min = 0;
             Weight Max = 255;
         }

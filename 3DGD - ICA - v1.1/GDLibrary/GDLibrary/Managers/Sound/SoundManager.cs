@@ -157,7 +157,9 @@ namespace GDLibrary
             if (eventData.EventType == EventActionType.OnPlay)
                 this.PlayCue(cueName);
             else if (eventData.EventType == EventActionType.OnPause)
-                this.PauseCue(cueName);
+            {
+                this.PauseCue(cueName); Console.WriteLine("I SHOULD PAUSE");
+            }
             else if (eventData.EventType == EventActionType.OnResume)
                 this.ResumeCue(cueName);
             else //OnStop

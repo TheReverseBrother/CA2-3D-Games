@@ -78,15 +78,17 @@ namespace GDLibrary
                 {
                     //Remove The Object Add to Score
                     EventDispatcher.Publish(new EventData(collidee, EventActionType.OnRemoveActor, EventCategoryType.SystemRemove));
+                    EventDispatcher.Publish(new EventData(EventActionType.OnPlay, EventCategoryType.Sound2D, new object[] { "pickup-sound" }));
+
                 }
                 else if (collidee.ActorType == ActorType.CollidableLazer)
                 {
+                    StopMusic();
                     EventDispatcher.Publish(new EventData(EventActionType.OnPause, EventCategoryType.Menu));
                     EventDispatcher.Publish(new EventData(EventActionType.GameOver,EventCategoryType.PauseAndChangeMenu));
                 }
                 else if(collidee.ActorType == ActorType.LevelOneFinish)
                 {
-                    Console.WriteLine("HELLO IN COLLISIOn");
                     object[] additionalParameters = { 2 };
                     EventDispatcher.Publish(new EventData(EventActionType.LevelOneComplete, EventCategoryType.Level,additionalParameters));
                     EventDispatcher.Publish(new EventData(EventActionType.OnPause, EventCategoryType.Menu));
@@ -104,6 +106,12 @@ namespace GDLibrary
                     EventDispatcher.Publish(new EventData("Change State",collidee,EventActionType.OnRemoveActor, EventCategoryType.Button));
                 }
             }
+        }
+        protected void StopMusic()
+        {
+            object[] additionalParameters = { "background-track" };
+
+            EventDispatcher.Publish(new EventData(EventActionType.OnPause, EventCategoryType.Sound2D, additionalParameters));
         }
 
         protected override void HandleInput(GameTime gameTime)
