@@ -86,8 +86,22 @@ namespace GDLibrary
                 }
                 else if(collidee.ActorType == ActorType.LevelOneFinish)
                 {
+                    Console.WriteLine("HELLO IN COLLISIOn");
+                    object[] additionalParameters = { 2 };
+                    EventDispatcher.Publish(new EventData(EventActionType.LevelOneComplete, EventCategoryType.Level,additionalParameters));
                     EventDispatcher.Publish(new EventData(EventActionType.OnPause, EventCategoryType.Menu));
                     EventDispatcher.Publish(new EventData(EventActionType.LevelOneComplete, EventCategoryType.PauseAndChangeMenu));
+                }
+                else if (collidee.ActorType == ActorType.LevelTwoFinish)
+                {
+                    object[] additionalParameters = { 1 };
+                    EventDispatcher.Publish(new EventData(EventActionType.LevelOneComplete, EventCategoryType.Level, additionalParameters));
+                    EventDispatcher.Publish(new EventData(EventActionType.OnPause, EventCategoryType.Menu));
+                    EventDispatcher.Publish(new EventData(EventActionType.GameComplete, EventCategoryType.PauseAndChangeMenu));
+                }
+                else if (collidee.ActorType == ActorType.CollidableButton)
+                {                    
+                    EventDispatcher.Publish(new EventData("Change State",collidee,EventActionType.OnRemoveActor, EventCategoryType.Button));
                 }
             }
         }

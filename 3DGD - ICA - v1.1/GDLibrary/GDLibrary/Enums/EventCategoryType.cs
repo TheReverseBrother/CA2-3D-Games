@@ -38,5 +38,7 @@ namespace GDLibrary
         TextRender,
         PauseAndChangeMenu,
         restart,
+        Level,
+        Button,
     }
 }

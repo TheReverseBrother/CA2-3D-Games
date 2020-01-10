@@ -2261,8 +2261,26 @@ namespace GDApp
         private void RegisterEvents()
         {
             this.eventDispatcher.restartGane += restartGame;
+            this.eventDispatcher.changeLevel += ChangeLevel;
+            this.eventDispatcher.changeState += changeButtonState;
+
         }
 
+        private void ChangeLevel(EventData eventData)
+        {
+            Console.WriteLine(eventData.AdditionalParameters[0] as string);
+            int level = (int)eventData.AdditionalParameters[0];
+            Console.WriteLine("Changing Level");
+            this.gameLevel = level;
+        }
+
+        private void changeButtonState(EventData eventData)
+        {
+            Predicate<Actor3D> pred = s => s.ID == "REMOVABLE WALL";
+            CollidablePrimitiveObject cprimitive = eventData.Sender as CollidablePrimitiveObject;
+            cprimitive.EffectParameters.Texture = this.textureDictionary["green"];
+            this.object3DManager.Remove(pred);
+        }
         private void restartGame(EventData eventData)
         {
             Predicate<Camera3D> pred = s => s.ID == AppData.CameraIDThirdPerson;
@@ -2477,7 +2495,7 @@ namespace GDApp
 
 
             //add start button
-            buttonID = "startbtn";
+            buttonID = "restartbtn";
             buttonText = "Next Level";
             position = new Vector2(graphics.PreferredBackBufferWidth / 2.0f, 400);
             texture = this.textureDictionary["button"];
@@ -2493,7 +2511,7 @@ namespace GDApp
 
             //add exit button - clone the audio button then just reset texture, ids etc in all the clones
             clone = (UIButtonObject)uiButtonObject.Clone();
-            clone.ID = "exitbtn";
+            clone.ID = "restartbtn";
             clone.Text = "Exit";
             //move down on Y-axis for next button
             clone.Transform.Translation += new Vector2(0, verticalBtnSeparation);
@@ -2570,7 +2588,7 @@ namespace GDApp
                 StatusType.Drawn, transform, Color.White, SpriteEffects.None, 1, texture));
 
 
-            texture = this.textureDictionary["gameOver"];
+            texture = this.textureDictionary["win"];
             scale = new Vector2(2, 2);
             transform = new Transform2D(new Vector2(60, 40), 0, scale, Vector2.One, Integer2.One);
 
@@ -2580,7 +2598,7 @@ namespace GDApp
 
 
             //add start button
-            buttonID = "restart";
+            buttonID = "restartbtn";
             buttonText = "Restart Game";
             position = new Vector2(graphics.PreferredBackBufferWidth / 2.0f, 400);
             texture = this.textureDictionary["button"];
@@ -2631,7 +2649,7 @@ namespace GDApp
 
 
             //add start button
-            buttonID = "nextLevel";
+            buttonID = "restartbtn";
             buttonText = "Next Level";
             position = new Vector2(graphics.PreferredBackBufferWidth / 2.0f, 400);
             texture = this.textureDictionary["button"];
@@ -3032,6 +3050,8 @@ namespace GDApp
             this.textureDictionary.Load("Assets/Textures/Colors/RED");
             this.textureDictionary.Load("Assets/Textures/Colors/Black");
             this.textureDictionary.Load("Assets/Textures/Colors/ice");
+            this.textureDictionary.Load("Assets/Textures/Colors/green");
+
             this.textureDictionary.Load("Assets/Textures/Player");
 
 

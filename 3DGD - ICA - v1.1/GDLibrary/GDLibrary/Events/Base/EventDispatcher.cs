@@ -37,6 +37,8 @@ namespace GDLibrary
         public delegate void TextRenderEventHandler(EventData eventData);
         public delegate void GameOver(EventData eventData);
         public delegate void Restart(EventData eventData);
+        public delegate void LevelChangedHandler(EventData eventData);
+        public delegate void ButtonHandler(EventData eventData);
 
         //an event is either null (not yet happened) or non-null - when the event occurs the delegate reads through its list and calls all the listening functions
         public event CameraEventHandler CameraChanged;
@@ -55,6 +57,8 @@ namespace GDLibrary
         public event TextRenderEventHandler TextRenderChanged;
         public event GameOver gameStateChanged;
         public event Restart restartGane;
+        public event LevelChangedHandler changeLevel;
+        public event ButtonHandler changeState;
 
 
 
@@ -158,6 +162,12 @@ namespace GDLibrary
                 case EventCategoryType.restart:
                     RestartEvent(eventData);
                     break;
+                case EventCategoryType.Level:
+                    OnLevelChange(eventData);
+                    break;
+                case EventCategoryType.Button:
+                    ButtonState(eventData);
+                    break;
                 default:
                     break;
             }
@@ -169,6 +179,15 @@ namespace GDLibrary
         {
             if (VideoChanged != null)
                 VideoChanged(eventData);
+        }
+
+        protected virtual void ButtonState(EventData eventData)
+        {
+            changeState?.Invoke(eventData);
+        }
+        protected virtual void OnLevelChange(EventData eventData)
+        {
+            changeLevel?.Invoke(eventData);
         }
 
         protected virtual void RestartEvent(EventData eventData)
