@@ -293,11 +293,15 @@ namespace GDApp
             for(int i = 1; i < AppData.turnOneLength; i++)
             {
                 cloneItem = forwardFloorBlock.Clone() as CollidablePrimitiveObject;
+                //changes the Z Position
                 cloneItem.Transform.Translation += new Vector3(0, 0, 40 * i);
+                //Saves Last Position
                 lastPosition = cloneItem.Transform.Translation;
 
                 this.object3DManager.Add(cloneItem);
             }
+            //Sets Forward block position so when next loop starts it starts from last path 
+            //helps keep paths consistant
             forwardFloorBlock.Transform.Translation = lastPosition;
             for (int i = 0; i < AppData.pathTwoLength; i++)
             {
@@ -330,7 +334,7 @@ namespace GDApp
             forwardFloorBlock.Transform.Translation = lastPosition;
             #endregion
 
-
+            //Adds the end blockwhere the house is
             #region Add End Block
             forwardFloorBlock.Transform.Translation += new Vector3(40, 0, 0);
 
@@ -340,6 +344,7 @@ namespace GDApp
 
         private void InitializeBanner()
         {
+            //creates Thin Block To create a Barrier
             EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
             effectParameters.Texture = this.textureDictionary["Banner"];
             BoxCollisionPrimitive box = new BoxCollisionPrimitive();
@@ -365,7 +370,7 @@ namespace GDApp
             Transform3D transform = null;
             Vector3 lastPosition = Vector3.Zero;
             #endregion
-
+            //Walls are create eaither along z axis or along x axis
             #region SideWalls Z Axis
             collisionPrimitive = new BoxCollisionPrimitive();
             transform = new Transform3D(new Vector3(-7.5f, 2, 40), new Vector3(5, 2, 40));
@@ -378,9 +383,11 @@ namespace GDApp
             collisionPrimitive, this.object3DManager);
 
             this.object3DManager.Add(collidablePrimitiveObject);
+            //creates Two objects that will be cloned when creating the walls along z Axis
             CollidablePrimitiveObject farWall = collidablePrimitiveObject.Clone() as CollidablePrimitiveObject;
             CollidablePrimitiveObject nearWall = collidablePrimitiveObject.Clone() as CollidablePrimitiveObject;
 
+            //Loop creates it along axis and saves last position so it can be used to calculate new position on next use
             for (int i = 0; i < AppData.turnOneLength-1; i++)
             {
                 cloneItem = farWall.Clone() as CollidablePrimitiveObject;
@@ -399,6 +406,8 @@ namespace GDApp
 
             }
             nearWall.Transform.Translation = lastPosition;
+
+            //Changes Turn One Wall to next position then iterates through again generating wall and saving position
             for (int i = 1; i < AppData.turnTwoLength; i++)
             {
                 cloneItem = nearWall.Clone() as CollidablePrimitiveObject;
@@ -509,8 +518,11 @@ namespace GDApp
             effectParameters.Texture = this.textureDictionary["RED"];
             Vector3 endPosition = new Vector3(40 * (AppData.pathOneLength + AppData.pathTwoLength - 2), 10, 40 * AppData.turnOneLength + 10);
 
+            //used to create the curves on the track
             float distance = Vector3.Distance(startPosition, endPosition);
             float thirdOfDistance = distance / 3;
+
+            //Start and End position is based off the path so if path changes so does start and end and the curves
             Vector3 firstCurve = startPosition + new Vector3(thirdOfDistance, 0, 20);
             Vector3 secondCurve = endPosition - new Vector3(thirdOfDistance, 0, 20);
             #endregion
@@ -546,6 +558,7 @@ namespace GDApp
             #endregion
 
             #region Hilt
+            //Hilt is a seperate object so is generated in same way
             Vector3 adjustment = new Vector3(0, 15, 0);
             Vector3 hiltStart = startPosition + adjustment;
             Transform3D transform3D = new Transform3D(hiltStart, new Vector3(2, 5, 2));
@@ -556,6 +569,7 @@ namespace GDApp
                 StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
             #region Track
 
+            //Everything needs adjusting just by the y Value so it is easy to change
             Vector3 hiltEnd = endPosition + adjustment;
             Vector3 hiltCurveOne = firstCurve + adjustment;
             Vector3 hiltCurveTwo = secondCurve + adjustment;
@@ -601,8 +615,10 @@ namespace GDApp
             #endregion
 
             #region Lasers Path One
+            //Generates Lasers along 1st Path
             if(AppData.pathOneLength >=3)
             {
+                //Creates Red Part Of lazer
                 for (int i = 1; i < 5; i++)
                 {
                     collisionPrimitive = new BoxCollisionPrimitive();
@@ -614,12 +630,13 @@ namespace GDApp
                     effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
                     cloneItem.Transform = new Transform3D(new Vector3(20 * i, 2, 40), new Vector3(1, 1, 30));
 
+                    //Sine Controller in Y Direction
                     cloneItem.AttachController(new TranslationSineLerpController("laser-" + i, ControllerType.SineTranslation,
                             Vector3.UnitY, new TrigonometricParameters(20, 0.1f, 90 * i)));
 
                     this.object3DManager.Add(cloneItem);
                 }
-
+                //Creates Hilt of Lazer
                 for (int i = 1; i < 5; i++)
                 {
                     collisionPrimitive = new BoxCollisionPrimitive();
@@ -629,6 +646,8 @@ namespace GDApp
                     laserTemplate = new CollidablePrimitiveObject("laser", ActorType.CollidableLazer, transform,
                         effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
                     laserTemplate.Transform = new Transform3D(new Vector3(20 * i, 2.2f, 25), new Vector3(2, 2, 5));
+
+                    //Sine Controller in Y Direction
                     laserTemplate.AttachController(new TranslationSineLerpController("laser-", ControllerType.SineTranslation,
                                 Vector3.UnitY, new TrigonometricParameters(20, 0.1f, 90 * i)));
                     this.object3DManager.Add(laserTemplate);
@@ -639,16 +658,22 @@ namespace GDApp
 
         private void InitialiseLevelOneMoveableWalls()
         {
+            //Determines amount needed
             int amount = (AppData.turnTwoLength - 1) * 2;
+
+
             Transform3D transform = null;
             EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
             effectParameters.Texture = this.textureDictionary["ice"];
             CollidablePrimitiveObject wall = null;
+
+            //Finds X Position and Y position
             float xPos =( AppData.pathOneLength + AppData.pathTwoLength-2) * 40;
             float zPos = AppData.turnOneLength * 40;
 
-
+            //Frequency for Sine Controllers
             float frequency = 0.1f;
+
             for(int i = 1;i < amount; i++)
             {
                 BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
@@ -657,6 +682,7 @@ namespace GDApp
                     StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
                 
                 #region Frequency Changer
+                //Changes Frequency of last few Walls
                 if(amount % 4 == 0)
                 {
                     if (i >= (amount - (amount / 4)))
@@ -669,7 +695,7 @@ namespace GDApp
                     }             
                 }
                 #endregion
-
+                //Sine Controller in X Direction
                 wall.AttachController(new TranslationSineLerpController("transControl1", ControllerType.SineTranslation,
                     Vector3.UnitX, 
                     new TrigonometricParameters(20,frequency,90 * i)));
@@ -681,11 +707,13 @@ namespace GDApp
 
         private void InitialiseLevelOneTrackLazer()
         {
+            #region Common Attributes
             CollidablePrimitiveObject collidablePrimitiveObject1 = null;
             float xPos = ((AppData.pathOneLength + AppData.pathTwoLength)-2) * 40;
             float zPos = (((AppData.turnOneLength - AppData.turnTwoLength) +1) * 40) + 20;
             Transform3D transform = null;
             int startTime = 0,midTime = 3,endTime=6;
+            #endregion
 
             #region Laser
             for(int i = 1; i < 4; i++)
@@ -703,6 +731,7 @@ namespace GDApp
                 #region Track
                 Track3D track3D = new Track3D(CurveLoopType.Cycle);
 
+                //Changes One Lazers Direction
                 if (i % 2 == 0)
                 {
                     track3D.Add(end, -Vector3.UnitZ, Vector3.UnitY, startTime);
@@ -879,7 +908,7 @@ namespace GDApp
             Transform3D transform = new Transform3D(new Vector3((x * 40) +10, 10,z* 40), new Vector3(30, 20, 30));
             BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
 
-
+            //Creates Brick base
             houseBase = new CollidablePrimitiveObject("base",
                     ActorType.LevelOneFinish,
                     transform,
@@ -893,6 +922,7 @@ namespace GDApp
             ef.Texture = this.textureDictionary["roof"];
             transform = new Transform3D(new Vector3((x * 40) + 10, 20, z * 40), new Vector3(30, 20, 30));
 
+            //Creates Roof
             collisionPrimitive = new BoxCollisionPrimitive();
             roof = new CollidablePrimitiveObject("roof",
                     ActorType.CollidableGround,
@@ -1020,14 +1050,16 @@ namespace GDApp
 
         private void InitializeLevelTwoWalls()
         {
+            #region Common Attributes
             CollidablePrimitiveObject collidablePrimitiveObject = null, leftWall = null, rightWall = null, cloneItem = null; ;
             EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
             effectParameters.Texture = this.textureDictionary["White"];
             BoxCollisionPrimitive collisionPrimitive = null;
             Transform3D transform = null;
             Vector3 lastPosition = Vector3.Zero;
-            
+            #endregion
 
+            //Walls are Generated based on what axis they are on X or Y
             #region SideWalls Z Axis
             collisionPrimitive = new BoxCollisionPrimitive();
             transform = new Transform3D(new Vector3(-7.5f, 2, 40), new Vector3(5, 2, 40));
@@ -1040,6 +1072,7 @@ namespace GDApp
             collisionPrimitive, this.object3DManager);
 
             this.object3DManager.Add(collidablePrimitiveObject);
+            //Walls are cloned when generated and position changed when used to allow easier generation
             CollidablePrimitiveObject farWall = collidablePrimitiveObject.Clone() as CollidablePrimitiveObject;
             CollidablePrimitiveObject nearWall = collidablePrimitiveObject.Clone() as CollidablePrimitiveObject;
 
@@ -1051,6 +1084,7 @@ namespace GDApp
                 lastPosition = cloneItem.Transform.Translation;
                 this.object3DManager.Add(cloneItem);
             }
+            //sets position of base object to allow next loop use last position
             farWall.Transform.Translation = lastPosition;
 
             for (int i = 0; i < AppData.LevelTwoPathOneLength-1; i++)
@@ -1256,15 +1290,19 @@ namespace GDApp
 
         private void InitializeLevelTwoTrackLazers()
         {
+            #region Common Attributes
             CollidablePrimitiveObject collidablePrimitiveObject1 = null;
             float xPos = 0;
             float zPos = ((AppData.LevelTwoPathOneLength * AppData.LevelTwoPathOneDirection)+0.5f) * 40;
             Transform3D transform = null;
             int startTime = 0, midTime = 3, endTime = 6;
+            #endregion
 
-            #region Laser
+            //Track lazers
+            #region Lazer
             for (int i = 1; i < 4; i++)
             {
+                //Start Position and End Position Calculated
                 Vector3 start = new Vector3(xPos, 10, zPos - (10 * i));
                 Vector3 end = new Vector3(xPos + (((AppData.LevelTwoTurnOneLength -1) * AppData.LevelTwoTurnOneDirection) *40), 10, zPos - (10 * i));
 
@@ -1277,7 +1315,7 @@ namespace GDApp
 
                 #region Track
                 Track3D track3D = new Track3D(CurveLoopType.Cycle);
-
+                //One of The Lazers Made go in opposite direction
                 if (i % 2 == 0)
                 {
                     track3D.Add(end, -Vector3.UnitZ, Vector3.UnitY, startTime);
@@ -1363,6 +1401,7 @@ namespace GDApp
             Vector3 secondCurve = endPosition - new Vector3(thirdOfDistance * AppData.LevelTwoTurnTwoDirection, 0, 20);
             #endregion
 
+            //creates pair of Sine Lazers on a track that are out of phase
             #region Lazer 1
             collidablePrimitiveObject = new CollidablePrimitiveObject("TrackLazerOne", ActorType.CollidableLazer, transform,
                 effectParameters, StatusType.Drawn | StatusType.Update, this.vertexDictionary[AppData.LitCube], collisionPrimitive, this.object3DManager);
@@ -1548,10 +1587,14 @@ namespace GDApp
                 for (int i = 0; i < AppData.LevelTwoPathOneLength; i++)
                 {
                 float speed = baseSpeed;
+
+                //Changes Speed of the lazers
                 if(i > (AppData.LevelTwoPathOneLength/2))
                 {
                     speed = 0.4f;
                 }
+
+                //Lazers that oscillate on the Y Axis
                 #region Vertical Lazers
                 collisionPrimitive = new BoxCollisionPrimitive();
 
@@ -1569,6 +1612,7 @@ namespace GDApp
                     this.object3DManager.Add(cloneItem);
                 #endregion
 
+                //Lazers that oscillate on the X Axis
                 #region Horizontal Lazers
                 collisionPrimitive = new BoxCollisionPrimitive();
 
@@ -1586,6 +1630,7 @@ namespace GDApp
                 #endregion
                 }
             #region Hilt
+                //Same Process as the lazers they just create the hilt aswell
             for (int i = 0; i < AppData.LevelTwoPathOneLength; i++)
             {
                 float speed = baseSpeed;
@@ -1642,7 +1687,11 @@ namespace GDApp
                 float offset = 10 * (float)Math.Pow(-1, i);
 
                 Vector3 position = startPosition + new Vector3(0,0, (i * 40) * AppData.LevelTwoPathOneDirection);
+
+                //Changes Last position but before it is put off center
                 lastPosition = position;
+
+                //moves item off center
                 Vector3 positionOffset = position + new Vector3(offset,0, 0);
                 transform = new Transform3D(positionOffset, new Vector3(1, 2, 1));
 
@@ -1658,7 +1707,7 @@ namespace GDApp
 
                 this.object3DManager.Add(pickUpObject);
             }
-
+            //Allows to use same object again improvement on the old system
             startPosition = lastPosition;
 
             for (int i = 1; i < AppData.LevelTwoTurnOneLength; i++)
@@ -1667,7 +1716,10 @@ namespace GDApp
                 float offset = 10 * (float)Math.Pow(-1, i);
 
                 Vector3 position = startPosition + new Vector3((i * 40)* AppData.LevelTwoTurnOneDirection, 0,0);
+                //Changes Position
                 lastPosition = position;
+
+                //Moves Item Off Center
                 Vector3 positionOffset = position + new Vector3(0, 0, offset);
                 transform = new Transform3D(positionOffset, new Vector3(1, 2, 1));
 
@@ -1828,12 +1880,16 @@ namespace GDApp
             float speed = 0.5f;
             #endregion
 
+            //X and Y Position Calculated
             float xPos = (((AppData.LevelTwoTurnOneLength * AppData.LevelTwoTurnOneDirection) +
                 (AppData.LevelTwoTurnTwoLength * AppData.LevelTwoTurnTwoDirection)) +2)* 40;
 
             float zPos = ((AppData.LevelTwoPathOneLength * AppData.LevelTwoPathOneDirection) + (AppData.LevelTwoPathTwoLength * AppData.LevelTwoPathTwoDirection)
                 + (AppData.LevelTwoPathThreeLength * AppData.LevelTwoPathThreeDirection)) * 40;
+
+            //Direction of the lazers +/- 1
             int direction = AppData.LevelTwoTurnThreeDirection;
+
             for (int i = 1; i < 3; i++)
             {
                 #region Vertical Lazer
@@ -1851,6 +1907,7 @@ namespace GDApp
 
                 this.object3DManager.Add(cloneItem);
                 #endregion
+
                 #region Horizontal Lazers
                 collisionPrimitive = new BoxCollisionPrimitive();
 
@@ -1908,6 +1965,8 @@ namespace GDApp
             EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
             effectParameters.Texture = this.textureDictionary["Black"];
 
+
+            //Calculates X and Y position
             float xPos = (((AppData.LevelTwoTurnOneLength * AppData.LevelTwoTurnOneDirection) + (AppData.LevelTwoTurnTwoLength * AppData.LevelTwoTurnTwoDirection)
                 + (AppData.LevelTwoTurnThreeLength * AppData.LevelTwoTurnThreeDirection))) * 40;
 
@@ -1915,7 +1974,7 @@ namespace GDApp
                 + (AppData.LevelTwoPathThreeLength * AppData.LevelTwoPathThreeDirection) + (AppData.LevelTwoPathFourLength * AppData.LevelTwoPathFourDirection))) * 40;
 
 
-
+            //Creates Base For a Button
             transform = new Transform3D(new Vector3(xPos + (6 * 40) + 23, 6, zPos + (4 * 40)), new Vector3(2, 10, 10));
             collidablePrimitiveObject = new CollidablePrimitiveObject("Button Base",
                 ActorType.CollidableGround,
@@ -1928,6 +1987,7 @@ namespace GDApp
 
             this.object3DManager.Add(collidablePrimitiveObject);
 
+            //Creates Button Top
             collisionPrimitive = new BoxCollisionPrimitive();
             effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
             effectParameters.Texture = this.textureDictionary["RED"];
@@ -1943,6 +2003,8 @@ namespace GDApp
 
             this.object3DManager.Add(collidablePrimitiveObject);
 
+
+            //Creates the Wall that Will Be Removed when button is pressed
             collisionPrimitive = new BoxCollisionPrimitive();
             effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
             effectParameters.Texture = this.textureDictionary["White"];
@@ -1961,6 +2023,7 @@ namespace GDApp
 
         private void LevelTwoEndHouse()
         {
+            //Calculates X and Y Position
             float xPos = (((AppData.LevelTwoTurnOneLength * AppData.LevelTwoTurnOneDirection) + (AppData.LevelTwoTurnTwoLength * AppData.LevelTwoTurnTwoDirection)
                 + (AppData.LevelTwoTurnThreeLength * AppData.LevelTwoTurnThreeDirection))) * 40;
 
@@ -1974,7 +2037,7 @@ namespace GDApp
             Transform3D transform = new Transform3D(new Vector3(xPos + (40 * 3)+10, 10, zPos), new Vector3(30, 20, 30));
             BoxCollisionPrimitive collisionPrimitive = new BoxCollisionPrimitive();
 
-
+            //Creates Brick base
             houseBase = new CollidablePrimitiveObject("base",
                     ActorType.LevelTwoFinish,
                     transform,
@@ -1988,6 +2051,7 @@ namespace GDApp
             ef.Texture = this.textureDictionary["roof"];
             transform = new Transform3D(new Vector3(xPos+(40 * 3)+10, 20, zPos), new Vector3(30, 20, 30));
 
+            //Creates Roof
             collisionPrimitive = new BoxCollisionPrimitive();
             roof = new CollidablePrimitiveObject("roof",
                     ActorType.CollidableGround,
@@ -2268,24 +2332,30 @@ namespace GDApp
         {
             int level = (int)eventData.AdditionalParameters[0];
             this.gameLevel = level;
+            //Changes Level
         }
 
         private void changeButtonState(EventData eventData)
         {
             Predicate<Actor3D> pred = s => s.ID == "REMOVABLE WALL";
             CollidablePrimitiveObject cprimitive = eventData.Sender as CollidablePrimitiveObject;
+            //Removes Wall
             cprimitive.EffectParameters.Texture = this.textureDictionary["green"];
             this.object3DManager.Remove(pred);
         }
         private void restartGame(EventData eventData)
         {
+            //Removes Camera by assigning it 'X'
             Predicate<Camera3D> pred = s => s.ID == AppData.CameraIDThirdPerson;
             Camera3D cam = this.cameraManager.Find(pred);
             cam.ID = "x";
 
-            
+            //Loads Game level is changed by seperate event
             LoadGame(worldScale,gameLevel);
+
+            //Initilialises Camera
             InitializeCameras();
+            //Sets active camera
             Predicate<Camera3D> pred2 = s => s.ID == AppData.CameraIDThirdPerson;
 
             this.cameraManager.SetActiveCamera(pred2);
@@ -3147,7 +3217,12 @@ namespace GDApp
             ProjectionParameters projectionParameters 
                 = new ProjectionParameters(MathHelper.PiOver4, aspectRatio, 1, 4000);
             AddThirdPersonCamera(AppData.CameraIDThirdPerson, viewport, projectionParameters);
-            AddTrack3DCamera(AppData.CameraIDTrack, viewport, projectionParameters);
+
+            if (this.gameLevel == 1)
+            {
+                AddTrack3DCamera(AppData.CameraIDTrack, viewport, projectionParameters);
+            }
+
 
         }
 
@@ -3258,7 +3333,7 @@ namespace GDApp
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkSlateBlue);
+            GraphicsDevice.Clear(Color.DarkTurquoise);
             base.Draw(gameTime);
         }
         #endregion

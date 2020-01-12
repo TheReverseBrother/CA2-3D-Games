@@ -6,6 +6,9 @@ Date Updated:
 Bugs:			None
 Fixes:			None
 */
+
+/* This gets score and changes it when an item is picked up
+ */
 using Microsoft.Xna.Framework;
 using System;
 
@@ -45,6 +48,7 @@ namespace GDLibrary
 
         protected virtual void EventDispatcher_PlayerChanged(EventData eventData)
         {
+            //Increments Score
             score++;
             parent.Text = "Score : " + score;
             bDirty = true;
@@ -52,8 +56,7 @@ namespace GDLibrary
         protected virtual void EventDispatcher_Level(EventData eventData)
         {
             int levelSent = (int)eventData.AdditionalParameters[0];
-            Console.WriteLine("Changing Level Progress" + levelSent);
-
+            //If going to Level Two Score is kept 
             if (levelSent == 2)
             {
                 int temp = this.score;
@@ -67,6 +70,7 @@ namespace GDLibrary
         }
         protected virtual void EventDispatcher_Restart(EventData eventData)
         {
+            //Restarts The Score
             if(level == 1)
             {
                 this.score = 0;
@@ -75,6 +79,7 @@ namespace GDLibrary
             }
             if(level == 2)
             {
+                //If going to level two score is equal to the finish of level One
                 this.score = levelOneScore;
                 parent.Text = "Score : " + score;
                 bDirty = true;

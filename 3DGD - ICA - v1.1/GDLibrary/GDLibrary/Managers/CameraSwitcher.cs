@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+/*
+ * Used To Change The Track Camera to the  Third Person Camera
+ */
 namespace GDLibrary
 {
     public class CameraSwitcher : GameComponent
@@ -29,7 +31,7 @@ namespace GDLibrary
 
         protected void startGame(EventData eventData)
         {
-
+            //Sets the activate time
             if (eventData.EventType == EventActionType.OnStart)
             {
                 this.active = true;
@@ -40,20 +42,16 @@ namespace GDLibrary
 
         public override void Update(GameTime gameTime)
         {
-            Console.WriteLine(this.secondsToExecute);
             if (!this.active)
             {
                 this.secondsBegin = gameTime.TotalGameTime.Seconds;
-                Console.WriteLine("NOT 2");
             }
 
             if (gameTime.TotalGameTime.Seconds == this.secondsToExecute)
             {
-                Console.WriteLine("Super ACTIVE");
-
+                //Sends Change Event
                 EventDispatcher.Publish(new EventData(EventActionType.OnCameraSetActive,EventCategoryType.Camera, new object[] { "third" }));
             }
-            Console.WriteLine("Time: " +gameTime.TotalGameTime.Seconds);
             base.Update(gameTime);
         }
     }
