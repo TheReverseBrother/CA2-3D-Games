@@ -214,6 +214,11 @@ Global Settings
         Min = 0.000000;
         Max = 200.000000;
     }
+
+    RPC
+    {
+        Name = RPC Preset;
+    }
 }
 
 Wave Bank

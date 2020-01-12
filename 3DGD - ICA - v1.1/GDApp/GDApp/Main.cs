@@ -38,6 +38,7 @@ namespace GDApp
         private CameraLayoutType cameraLayoutType;
         private ScreenLayoutType screenLayoutType;
         private UIManager uiManager;
+        private CameraSwitcher cameraSwitcher;
         private PlayerCollidablePrimitiveObject drivableModelObject;
         #endregion
 
@@ -86,6 +87,7 @@ namespace GDApp
 
             #region Initialize Managers
             InitializeManagers();
+
             #endregion
 
             #region Load Game
@@ -97,6 +99,8 @@ namespace GDApp
             RegisterEvents();
             #region Cameras
             InitializeCameras();
+            this.cameraSwitcher = new CameraSwitcher("Switch Cutscene", this, this.eventDispatcher);
+            this.Components.Add(this.cameraSwitcher);
             #endregion
 
             #region Menu & UI
@@ -105,12 +109,6 @@ namespace GDApp
             InitializeUI();
             #endregion
 
-#if DEBUG
-            InitializeDebug(true);
-            bool bShowCDCRSurfaces = true;
-            bool bShowZones = true;
-            InitializeDebugCollisionSkinInfo(bShowCDCRSurfaces, bShowZones);
-#endif
 
             //Publish Start Event(s)
             StartGame();
@@ -190,7 +188,7 @@ namespace GDApp
 
 
             UITextObject score = new UITextObject("Score",ActorType.UIText, StatusType.Drawn | StatusType.Update,transform
-                ,Color.NavajoWhite,SpriteEffects.None,10,"Score: 0", this.fontDictionary["debugFont"]);
+                ,Color.NavajoWhite,SpriteEffects.None,10,"Score: 0", this.fontDictionary["hudFont"]);
 
 
             score.AttachController(new UIProgressController("id",ControllerType.UIProgress,score,this.eventDispatcher));
@@ -231,7 +229,8 @@ namespace GDApp
             EventDispatcher.Publish(new EventData(EventActionType.OnPlay, EventCategoryType.Sound2D, additionalParameters));
 
             if (gameLevel == 1)
-            {     
+            {
+                InitializeBanner();
                 InitializeLevelOneSineTrackLaser();
                 InitializeLevelOnePath();
                 InitializeLevelOneWalls();
@@ -337,6 +336,23 @@ namespace GDApp
 
             this.object3DManager.Add(forwardFloorBlock);
             #endregion
+        }
+
+        private void InitializeBanner()
+        {
+            EffectParameters effectParameters = this.effectDictionary[AppData.LitTexturedEffectID].Clone() as EffectParameters;
+            effectParameters.Texture = this.textureDictionary["Banner"];
+            BoxCollisionPrimitive box = new BoxCollisionPrimitive();
+            Transform3D transform = new Transform3D(new Vector3(100, 100, 20), new Vector3(0.01f, 50, 200));
+            CollidablePrimitiveObject collidablePrimitiveObject = new CollidablePrimitiveObject("Banner ",
+            ActorType.CollidableArchitecture,
+            transform,
+            effectParameters,
+            StatusType.Drawn | StatusType.Update,
+            this.vertexDictionary[AppData.LitCube],
+            box, this.object3DManager);
+
+            this.object3DManager.Add(collidablePrimitiveObject);
         }
 
         private void InitializeLevelOneWalls()
@@ -1984,6 +2000,7 @@ namespace GDApp
 
         }
         #endregion
+
         #region Non-Collidable Primitive Objects
         private void InitializeNonCollidableProps()
         {
@@ -2236,28 +2253,6 @@ namespace GDApp
         }
         #endregion
 
-        #region Collidable Zone Objects
-        private void InitializeCollidableZones()
-        {
-            Transform3D transform = null;
-            SimpleZoneObject simpleZoneObject = null;
-            ICollisionPrimitive collisionPrimitive = null;
-
-            transform = new Transform3D(new Vector3(-20, 8, 40), 8 * Vector3.One);
-
-            //we can have a sphere or a box - its entirely up to the developer
-            // collisionPrimitive = new SphereCollisionPrimitive(transform, 2);
-
-            //make the collision primitive - changed slightly to no longer need transform
-            collisionPrimitive = new BoxCollisionPrimitive();
-
-            simpleZoneObject = new SimpleZoneObject("camera trigger zone 1", ActorType.CollidableZone, transform,
-                StatusType.Drawn | StatusType.Update, collisionPrimitive);
-
-            this.object3DManager.Add(simpleZoneObject);
-
-        }
-        #endregion
         #endregion
 
         #region Events
@@ -2699,33 +2694,6 @@ namespace GDApp
             this.objectArchetypeDictionary = new Dictionary<string, DrawnActor3D>();
         }
 
-#if DEBUG
-        private void InitializeDebug(bool bEnabled)
-        {
-            if (bEnabled)
-            {
-                DebugDrawer debugDrawer = new DebugDrawer(this, this.cameraManager,
-                    this.eventDispatcher,
-                    StatusType.Off,
-                    this.cameraLayoutType,
-                    this.spriteBatch, this.fontDictionary["debugFont"], new Vector2(20, 20), Color.White);
-
-                debugDrawer.DrawOrder = 4;
-                Components.Add(debugDrawer);
-            }
-        }
-        private void InitializeDebugCollisionSkinInfo(bool bShowCDCRSurfaces, bool bShowZones)
-        {
-            //draws CDCR surfaces for boxes and spheres
-            PrimitiveDebugDrawer primitiveDebugDrawer = new PrimitiveDebugDrawer(this, bShowCDCRSurfaces, bShowZones, 
-                this.cameraManager, this.object3DManager, this.eventDispatcher, StatusType.Drawn | StatusType.Update);
-            primitiveDebugDrawer.DrawOrder = 5;
-            Components.Add(primitiveDebugDrawer);
-
-            //set color for the bounding boxes
-            BoundingBoxDrawer.boundingBoxColor = Color.White;
-        }
-#endif
 
         #region Assets
 
@@ -2978,9 +2946,7 @@ namespace GDApp
             this.fontDictionary.Load("hudFont", "Assets/Fonts/hudFont");
             this.fontDictionary.Load("menu", "Assets/Fonts/menu");
             this.fontDictionary.Load("Assets/Fonts/mouse");
-#if DEBUG
             this.fontDictionary.Load("debugFont", "Assets/Debug/Fonts/debugFont");
-#endif
         }
 
         private void LoadTextures()
@@ -3092,17 +3058,28 @@ namespace GDApp
         {
             Track3D track3D = null;
 
-            //starts away from origin, moves forward and rises, then ends closer to origin and looking down from a height
-            track3D = new Track3D(CurveLoopType.Oscillate);
-            track3D.Add(new Vector3(0, 10, 200), -Vector3.UnitZ, Vector3.UnitY, 0);
-            track3D.Add(new Vector3(0, 20, 150), -Vector3.UnitZ, Vector3.UnitY, 2);
-            track3D.Add(new Vector3(0, 40, 100), -Vector3.UnitZ, Vector3.UnitY, 4);
+            float var1 = 40 * (AppData.pathOneLength - 1);
+            float var2 = 100 + (40 * (AppData.turnOneLength - 1));
+            float var3 = var1 + (40 * (AppData.pathTwoLength-1));
+            float var4 = var2 - (40 * (AppData.turnTwoLength - 1));
+            float var5 = var3 + (40 * AppData.pathThreeLength - 1);
+            track3D = new Track3D(CurveLoopType.Linear);
+            track3D.Add(new Vector3(0, 20, 100), -Vector3.UnitZ, Vector3.UnitY, 0);
+            track3D.Add(new Vector3(var1, 20, 110), -Vector3.UnitZ, Vector3.UnitY, 6);
+            track3D.Add(new Vector3(var1, 20,var2), -Vector3.UnitZ, Vector3.UnitY, 12);
+            track3D.Add(new Vector3(var3, 20, var2), -Vector3.UnitZ, Vector3.UnitY, 18);
+            track3D.Add(new Vector3(var3, 20, var4), -Vector3.UnitZ, Vector3.UnitY, 24);
+            track3D.Add(new Vector3(var3-40, 20, var4 - (40 * 2)), Vector3.UnitX, Vector3.UnitY, 30);
+            track3D.Add(new Vector3(var3, 20, var4 - (40*3)), Vector3.UnitZ, Vector3.UnitY, 36);
+            track3D.Add(new Vector3(var3, 20, var4 - (40 * 3)), Vector3.UnitZ, Vector3.UnitY, 36);
+            track3D.Add(new Vector3(var5, 20, var4 - (40 * 3)), Vector3.UnitZ, Vector3.UnitY, 42);
+            track3D.Add(new Vector3(var5 + 40, 60, var4 - (40)), -Vector3.UnitX, Vector3.UnitY, 48);
 
             //set so that the camera looks down at the origin at the end of the curve
             Vector3 finalPosition = new Vector3(0, 80, 50);
             Vector3 finalLook = Vector3.Normalize(Vector3.Zero - finalPosition);
 
-            track3D.Add(finalPosition, finalLook, Vector3.UnitY, 6);
+            //track3D.Add(finalPosition, finalLook, Vector3.UnitY, 6);
             this.track3DDictionary.Add("push forward 1", track3D);
 
             //add more transform3D curves here...
@@ -3169,10 +3146,11 @@ namespace GDApp
             float aspectRatio = (float)this.resolution.X / this.resolution.Y;
             ProjectionParameters projectionParameters 
                 = new ProjectionParameters(MathHelper.PiOver4, aspectRatio, 1, 4000);
-
             AddThirdPersonCamera(AppData.CameraIDThirdPerson, viewport, projectionParameters);
+            AddTrack3DCamera(AppData.CameraIDTrack, viewport, projectionParameters);
+
         }
- 
+
         private void AddTrack3DCamera(string id, Viewport viewport, ProjectionParameters projectionParameters)
         {
             //doesnt matter where the camera starts because we reset immediately inside the Transform3DCurveController
@@ -3259,137 +3237,9 @@ namespace GDApp
             }
             ToggleMenu();
 
-#if DEBUG
-            ToggleDebugInfo();
-            DemoSetControllerPlayStatus();
-            DemoSoundManager();
-            DemoCycleCamera();
-            DemoUIProgressUpdate();
-            DemoUIAddRemoveObject();
-#endif
+
             base.Update(gameTime);
         }
-
-        private void DemoUIAddRemoveObject()
-        {
-            if(this.keyboardManager.IsFirstKeyPress(Keys.F5))
-            {
-                string strText = "You win!!!!";
-                SpriteFont strFont = this.fontDictionary["menu"];
-                Vector2 strDim = strFont.MeasureString(strText);
-                strDim /= 2.0f;
-
-                Transform2D transform
-                    = new Transform2D(
-                        (Vector2)this.screenCentre,
-                        0, new Vector2(1, 1), 
-                        strDim,     //Vector2.Zero,
-                        new Integer2(1, 1));
-
-                UITextObject newTextObject
-                    = new UITextObject("win msg",
-                    ActorType.UIText,
-                    StatusType.Drawn | StatusType.Update,
-                    transform,
-                    Color.Red,
-                    SpriteEffects.None,
-                    0,
-                    strText,
-                    strFont);
-
-                newTextObject.AttachController(new
-                    UIRotationScaleExpireController("rslc1",
-                    ControllerType.UIRotationLerp, 45, 0.5f, 5000, 1.01f));
-
-                EventDispatcher.Publish(new EventData(
-                    "",
-                    newTextObject, //handle to "win!"
-                    EventActionType.OnAddActor2D,
-                    EventCategoryType.SystemAdd));
-            }
-            else if(this.keyboardManager.IsFirstKeyPress(Keys.F6))
-            {
-                EventDispatcher.Publish(new EventData(
-                    "win msg",
-                    null,
-                    EventActionType.OnRemoveActor2D,
-                    EventCategoryType.SystemRemove));
-            }
-
-
-
-        }
-
-#if DEBUG
-        private void DemoUIProgressUpdate()
-        {
-            //testing event generation for UIProgressController
-            if (this.keyboardManager.IsFirstKeyPress(Keys.F9))
-            {
-                //increase the left progress controller by 2
-                object[] additionalEventParams = {
-                    AppData.PlayerOneProgressControllerID, -1 };
-                EventDispatcher.Publish(new EventData(
-                    EventActionType.OnHealthDelta, 
-                    EventCategoryType.Player, additionalEventParams));
-            }
-            else if (this.keyboardManager.IsFirstKeyPress(Keys.F10))
-            {
-                //increase the left progress controller by 2
-                object[] additionalEventParams = {
-                    AppData.PlayerOneProgressControllerID, 1 };
-                EventDispatcher.Publish(new EventData(EventActionType.OnHealthDelta, EventCategoryType.Player, additionalEventParams));
-            }
-
-            if (this.keyboardManager.IsFirstKeyPress(Keys.F11))
-            {
-                //increase the left progress controller by 2
-                object[] additionalEventParams = { AppData.PlayerTwoProgressControllerID, -2 };
-                EventDispatcher.Publish(new EventData(EventActionType.OnHealthDelta, EventCategoryType.Player, additionalEventParams));
-            }
-            else if (this.keyboardManager.IsFirstKeyPress(Keys.F12))
-            {
-                //increase the left progress controller by 2
-                object[] additionalEventParams = { AppData.PlayerTwoProgressControllerID, 2 };
-                EventDispatcher.Publish(new EventData(EventActionType.OnHealthDelta, EventCategoryType.Player, additionalEventParams));
-            }
-        }
-        private void DemoCycleCamera()
-        {
-            if (this.keyboardManager.IsFirstKeyPress(AppData.CycleCameraKey))
-            {
-                EventDispatcher.Publish(new EventData(EventActionType.OnCameraCycle, EventCategoryType.Camera));
-            }
-        }
-        private void ToggleDebugInfo()
-        {
-            if (this.keyboardManager.IsFirstKeyPress(AppData.DebugInfoShowHideKey))
-            {
-                EventDispatcher.Publish(new EventData(EventActionType.OnToggle, EventCategoryType.Debug));
-            }
-        }
-        private void DemoSoundManager()
-        {
-            if (this.keyboardManager.IsFirstKeyPress(Keys.B))
-            {
-                //add event to play mouse click
-                object[] additionalParameters = { "boing" };
-                EventDispatcher.Publish(new EventData(EventActionType.OnPlay, EventCategoryType.Sound2D, additionalParameters));
-            }
-        }
-        private void DemoSetControllerPlayStatus()
-        {
-            Actor3D torusActor = this.object3DManager.Find(actor => actor.ID.Equals("torus 1"));
-            if (torusActor != null && this.keyboardManager.IsFirstKeyPress(Keys.O))
-            {
-                torusActor.SetControllerPlayStatus(PlayStatusType.Pause, controller => controller.GetControllerType() == ControllerType.Rotation);
-            }
-            else if (torusActor != null && this.keyboardManager.IsFirstKeyPress(Keys.P))
-            {
-                torusActor.SetControllerPlayStatus(PlayStatusType.Play, controller => controller.GetControllerType() == ControllerType.Rotation);
-            }
-        }
-#endif
 
         private void ToggleMenu()
         {
@@ -3409,7 +3259,6 @@ namespace GDApp
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.DarkSlateBlue);
-
             base.Draw(gameTime);
         }
         #endregion
