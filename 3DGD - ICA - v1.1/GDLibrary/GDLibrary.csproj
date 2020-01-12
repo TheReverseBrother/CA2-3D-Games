@@ -132,6 +132,7 @@
     <Compile Include="GDLibrary\Interfaces\IController.cs" />
     <Compile Include="GDLibrary\Interfaces\IEffectParameters.cs" />
     <Compile Include="GDLibrary\Interfaces\IVertexData.cs" />
+    <Compile Include="GDLibrary\Managers\CameraSwitcher.cs" />
     <Compile Include="GDLibrary\Managers\Input\GamepadManager.cs" />
     <Compile Include="GDLibrary\Managers\Menu\MenuManager.cs" />
     <Compile Include="GDLibrary\Managers\Picking\PickingManager.cs" />
